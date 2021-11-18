@@ -4,10 +4,7 @@ const config = require("../config");
 
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
-  const rows = await db.query(`SELECT * FROM product LIMIT ?,?`, [
-    offset,
-    config.listPerPage,
-  ]);
+  const rows = await db.query(`SELECT * FROM product`);
   const data = helper.emptyOrRows(rows);
   const meta = { page };
 
@@ -24,15 +21,15 @@ async function create(product) {
       VALUES 
       (?, ?, ?, ?,?, ?, ?, ?, ?)`,
     [
-      product.partnumber,
-      product.name,
-      product.price,
-      product.comment,
-      product.productcategoryid,
-      product.imagefile,
-      product.createdate,
-      product.modifieddate,
-      product.active,
+      product.PartNumber,
+      product.Name,
+      product.Price,
+      product.Comment,
+      product.ProductCategoryId,
+      product.ImageFile,
+      product.CreateDate,
+      product.ModifiedDate,
+      product.Active,
     ]
   );
 
@@ -48,19 +45,19 @@ async function create(product) {
 async function update(id, product) {
   const result = await db.query(
     `UPDATE product 
-      SET partnumber=?, name=?, price=?, comment=?,
-          productcategoryid=?, imagefile=?, createdate=?, modifieddate=?, active=?
-      WHERE productid=?`,
+      SET PartNumber=?, Name=?, Price=?, Comment=?,
+          ProductCategoryId=?, ImageFile=?, CreateDate=?, ModifiedDate=?, Active=?
+      WHERE ProductId=?`,
     [
-      product.partnumber,
-      product.name,
-      product.price,
-      product.comment,
-      product.productcategoryid,
-      product.imagefile,
-      product.createdate,
-      product.modifieddate,
-      product.active,
+      product.PartNumber,
+      product.Name,
+      product.Price,
+      product.Comment,
+      product.ProductCategoryId,
+      product.ImageFile,
+      product.CreateDate,
+      product.ModifiedDate,
+      product.Active,
       id,
     ]
   );

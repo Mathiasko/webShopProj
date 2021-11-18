@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Catalogio - Category</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" media="screen,projection" type="text/css" href="css/main.css" />
+<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="css/main-msie.css" /><![endif]-->
+<link rel="stylesheet" media="print" type="text/css" href="css/print.css" />
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="js/tabs.js"></script>
+<script type="text/javascript" src="js/tooltip.js"></script>
+<script type="text/javascript" src="js/showdetail.js"></script>
+</head>
+<body>
+<div id="main">
+  <!-- Signup / Login -->
+  <div id="top">
+    <p class="nomt"> <a href="javascript:void(0);" onclick="ShowHide('signup-form')">Login</a> / <a href="#">Registration</a> </p>
+    <!-- Login form -->
+    <div id="signup-form" style="display:none;">
+      <div id="signup-form-tray"><a href="javascript:void(0);" onclick="ShowHide('signup-form')">Close [x]</a></div>
+      <div id="signup-form-form">
+        <form action="#" method="get">
+          <table class="nom">
+            <tr>
+              <td><label for="inp-user">Username:</label></td>
+              <td colspan="2"><input type="text" size="27" name="" id="inp-user" /></td>
+            </tr>
+            <tr>
+              <td><label for="inp-pass">Password:</label></td>
+              <td colspan="2"><input type="text" size="27" name="" id="inp-pass" /></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="smaller"><input type="checkbox" name="" id="inp-remember" />
+                <label for="inp-remember" title="Remember me for 14 days" class="help">Remember</label></td>
+              <td class="t-right"><input type="image" value="Login" src="design/signup-button.gif" /></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+      <!-- /signup-form-form -->
+      <div id="signup-form-bottom">
+        <p class="ico-send nom"><a href="#">Forgot your password?</a></p>
+      </div>
+      <!-- /signup-form-bottom -->
+    </div>
+    <!-- /signup-form -->
+  </div>
+  <!-- /top -->
+  <hr class="noscreen" />
+  <!-- Header -->
+  <div id="header">
+    <h1 id="logo"><a href="#"><img src="design/logo.gif" alt="" /></a></h1>
+    <hr class="noscreen" />
+    <!-- Date -->
+    <div class="date date-24">
+      <p class="nom">Today is <strong>Monday, March 24th 2009</strong><br />
+        <span class="nonhigh"><a href="#">Make Catalogio your homepage</a></span></p>
+    </div>
+    <!-- /date -->
+    <hr class="noscreen" />
+  </div>
+  <!-- /header -->
+  <!-- Tabs -->
+  <div id="search-tabs" class="box">
+    <ul id="search-type">
+      <li><a href="#s01"><span>Internet</span></a></li>
+      <li><a href="#s02"><span>Firms</span></a></li>
+      <li><a href="#s03"><span>Articles</span></a></li>
+      <li><a href="#s04"><span>Images</span></a></li>
+      <li><a href="#s05"><span>News</span></a></li>
+    </ul>
+  </div>
+  <!-- /search-tabs -->
+  <!-- Search -->
+  <div id="search-top"></div>
+  <div id="search">
+    <div id="search-in">
+      <div id="s01">
+        <form action="#" method="get">
+          <p class="nom t-center">
+            <label for="search-input01">Internet:</label>
+            <input type="text" size="75" name="" id="search-input01" />
+            <input type="image" value="Search" src="design/search-button.gif" class="search-submit" />
+          </p>
+        </form>
+      </div>
+      <div id="s02">
+        <form action="#" method="get">
+          <p class="nom t-center">
+            <label for="search-input02">Firms:</label>
+            <input type="text" size="75" name="" id="search-input02" />
+            <input type="image" value="Search" src="design/search-button.gif" class="search-submit" />
+          </p>
+        </form>
+      </div>
+      <div id="s03">
+        <form action="#" method="get">
+          <p class="nom t-center">
+            <label for="search-input03">Articles:</label>
+            <input type="text" size="75" name="" id="search-input03" />
+            <input type="image" value="Search" src="design/search-button.gif" class="search-submit" />
+          </p>
+        </form>
+      </div>
+      <div id="s04">
+        <form action="#" method="get">
+          <p class="nom t-center">
+            <label for="search-input04">Images:</label>
+            <input type="text" size="75" name="" id="search-input04" />
+            <input type="image" value="Search" src="design/search-button.gif" class="search-submit" />
+          </p>
+        </form>
+      </div>
+      <div id="s05">
+        <form action="#" method="get">
+          <p class="nom t-center">
+            <label for="search-input05">News:</label>
+            <input type="text" size="75" name="" id="search-input05" />
+            <input type="image" value="Search" src="design/search-button.gif" class="search-submit" />
+          </p>
+        </form>
+      </div>
+      <hr class="noscreen" />
+    </div>
+    <!-- /search-in -->
+  </div>
+  <!-- /search -->
+  <div id="search-bottom"></div>
+  <script type="text/javascript">
+    new Control.Tabs('search-type');
+    </script>
+  <!-- Content -->
+  <div id="page" class="box">
+    <div class="title01-top"></div>
+    <div class="title01">
+      <div class="title01-in">
+        <h3 class="ico-info">Travel</h3>
+      </div>
+    </div>
+    <div class="title01-bottom"></div>
+    <p class="bb nomt"><a href="#">Catalog</a> &raquo; <strong>Travel</strong></p>
+    <!-- Subcategories -->
+    <h4>Subcategories:</h4>
+    <ul class="ul-categories box">
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+      <li><a href="#">Lorem ipsum dolor</a> (125)</li>
+    </ul>
+    <!-- Pagination -->
+    <div class="title01-top"></div>
+    <div class="title01">
+      <div class="title01-in">
+        <p class="pagination"> <a href="#">&laquo; Previous</a> &nbsp; <a href="#">1</a><span class="noscreen">,</span> <a href="#">2</a><span class="noscreen">,</span> <strong>3</strong><span class="noscreen">,</span> <a href="#">4</a><span class="noscreen">,</span> <a href="#">5</a><span class="noscreen">,</span> <a href="#">6</a><span class="noscreen">,</span> <a href="#">7</a><span class="noscreen">,</span> &nbsp; <a href="#">Next &raquo;</a> </p>
+      </div>
+    </div>
+    <div class="title01-bottom"></div>
+    <p>Results <strong>1 - 10</strong> of <strong>520</strong>.</p>
+    <!-- Sponsored links -->
+    <div class="title03-top"></div>
+    <div class="title03">
+      <h3 class="nom">Sponsored links:</h3>
+      <ol class="cat-results">
+        <li>
+          <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+          <p><span class="high">http://www.server.com/index.php</span><br />
+            Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+        </li>
+        <li>
+          <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+          <p><span class="high">http://www.server.com/index.php</span><br />
+            Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+        </li>
+        <li>
+          <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+          <p><span class="high">http://www.server.com/index.php</span><br />
+            Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+        </li>
+      </ol>
+    </div>
+    <div class="title03-bottom"></div>
+    <ol class="cat-results">
+      <li>
+        <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+        <p><span class="high">http://www.server.com/index.php</span><br />
+          Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+      </li>
+      <li>
+        <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+        <p><span class="high">http://www.server.com/index.php</span><br />
+          Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+      </li>
+      <li>
+        <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+        <p><span class="high">http://www.server.com/index.php</span><br />
+          Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+      </li>
+      <li>
+        <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+        <p><span class="high">http://www.server.com/index.php</span><br />
+          Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+      </li>
+      <li>
+        <h4><a href="#">Lorem ipsum dolor sit amete</a> &ndash; <span><a href="#" class="ico-card">Details</a></span></h4>
+        <p><span class="high">http://www.server.com/index.php</span><br />
+          Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque habitant esti. Lorem ipsum dolor sit amete, consectetuer adipiscing elit. Integer eget risus a ante gravida suscipit. Maecenas luctus metus. Pellentesque esti.</p>
+      </li>
+    </ol>
+    <!-- Pagination -->
+    <div class="title01-top"></div>
+    <div class="title01">
+      <div class="title01-in">
+        <p class="pagination"> <a href="#">&laquo; Previous</a> &nbsp; <a href="#">1</a><span class="noscreen">,</span> <a href="#">2</a><span class="noscreen">,</span> <strong>3</strong><span class="noscreen">,</span> <a href="#">4</a><span class="noscreen">,</span> <a href="#">5</a><span class="noscreen">,</span> <a href="#">6</a><span class="noscreen">,</span> <a href="#">7</a><span class="noscreen">,</span> &nbsp; <a href="#">Next &raquo;</a> </p>
+      </div>
+    </div>
+    <div class="title01-bottom"></div>
+  </div>
+  <!-- /page -->
+  <!-- Footer -->
+  <div id="footer">
+    <hr class="noscreen" />
+    <p class="f-right noprint"><a href="category.html">Categorys</a>, <a href="detail.html">Details</a>, <a href="results.html">Results</a>, <a href="submit.html">Submit</a></p>
+    <p>&copy;&nbsp;2009 <a href="#">Your Company</a><br />
+      <!-- Do you want to remove this backlinks? Look at www.nuviotemplates.com/payment.php -->
+      <span id="copy"><a href="http://www.nuviotemplates.com/">Free web templates</a> by <a href="http://www.qartin.cz/">Qartin</a><br />
+      <span class="smaller">Enjoy <a href="http://www.southpadre.net/springbreak/" title="South Padre Island Spring Break">South Padre Island Spring Break</a></span></span></p>
+    <!-- Do you want to remove this backlinks? Look at www.nuviotemplates.com/payment.php -->
+  </div>
+  <!-- /footer -->
+</div>
+<!-- /main -->
+</body>
+</html>

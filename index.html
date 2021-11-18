@@ -1,106 +1,269 @@
-<!DOCTYPE HTML>
-<head>
-<title>Bigshot</title>
-<meta charset="utf-8">
-<!-- CSS Files -->
-<link rel="stylesheet" type="text/css" media="screen" href="css/style.css">
-<link rel="stylesheet" type="text/css" media="screen" href="menu/css/simple_menu.css">
-<!--JS FILES -->
-<script src="js/index.js"></script>
-</head>
-<body>
-<div class="header">
-  <!-- Logo/Title -->
-  <div id="site_title"><a href="index.html"> <img src="img/logo.png" alt=""></a> </div>
-  <!-- Main Menu -->
-  <ol id="menu">
-    <li class="active_menu_item"><a href="index.html" style="color:#FFF">Home</a>
-    </li>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Catalogio</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link
+      rel="stylesheet"
+      media="screen,projection"
+      type="text/css"
+      href="css/main.css"
+    />
+    <link rel="stylesheet" href="css/own.css">
+    <link rel="stylesheet" media="print" type="text/css" href="css/print.css" />
+    <script type="text/javascript" src="js/prototype.js" defer></script>
+    <script type="text/javascript" src="js/tabs.js" defer></script>
+    <script type="text/javascript" src="js/showdetail.js" defer></script>
+    <script src="js/index.js" defer></script>
+    <script src="https://kit.fontawesome.com/c79de776ac.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="main">
+      <!-- Header -->
+      <div id="header">
+        <h1 id="logo">
+          <a href="#"><img src="design/logo.gif" alt="" /></a>
+        </h1>
+        <hr class="noscreen" />
 
-    <li><a href="#">Pages</a>
-    </li>
-
-    <li><a href="elements.html">Elements</a></li>
-    <li><a href="#">Galleries</a>
-    </li>
-    <li><a href="contact.html">Contact</a></li>
-  </ol>
-</div>
-<!-- END header -->
-<div id="container">
-  <!-- tab panes -->
-  <div id="prod_wrapper">
-    <div id="panes">
-      <div> <img src="img/demo/1.jpg" alt="">
-        <h5>Mauris elementum</h5>
-        <p>Nulla hendrerit commodo tortor, vitae elementum magna convallis nec. Nam tempor nibh a purus aliquam et adipiscing elit gravida. Ut vitae nunc a libero volutpat gravida. Nullam egestas mi sit amet dui scelerisque eu laoreet nisi ultrices. Ut vitae nunc a libero volutpat gravida. Nam tempor nibh a purus aliquam. </p>
-        <p style="text-align:right; margin-right: 16px"><a href="#" class="button">More Info</a> <a href="#" class="button">Buy Now</a></p>
+        <!-- /date -->
+        <hr class="noscreen" />
+      </div>
+      <!-- /header -->
+      <script type="text/javascript"></script>
+      <div class="cart">
+        <i class="fa-solid fa-cart-shopping fa-3x"></i>
+        <p id="cartCount">(0)</p>
+      </div>
+      <!-- Content -->
+      <div id="page" class="box">
+        <!-- Catalog -->
+        <div class="box">
+          <div id="col-l">
+            <div class="title01-top"></div>
+            <div class="title01">
+              <div class="title01-in">
+                <p class="f-right noprint">
+                  <strong><a href="#" class="add">Submit a Site</a></strong>
+                </p>
+                <h2 class="ico-list">Katalog</h2>
+              </div>
+            </div>
+            <div class="title01-bottom"></div>
+            <div class="box">
+              <dl class="cat">
+                <dt><a href="#">Some Category</a></dt>
+                <dd>
+                  <a href="#">Category</a>, <a href="#">Category</a>,
+                  <a href="#">Category</a>, <a href="#">Category</a>
+                </dd>
+                <dt><a href="#">Some Category</a></dt>
+                <dd>
+                  <a href="#">Category</a>, <a href="#">Category</a>,
+                  <a href="#">Category</a>, <a href="#">Category</a>
+                </dd>
+              </dl>
+              <dl class="cat f-right">
+                <dt><a href="#">Some Category</a></dt>
+                <dd>
+                  <a href="#">Category</a>, <a href="#">Category</a>,
+                  <a href="#">Category</a>, <a href="#">Category</a>
+                </dd>
+                <dt><a href="#">Some Category</a></dt>
+                <dd>
+                  <a href="#">Category</a>, <a href="#">Category</a>,
+                  <a href="#">Category</a>, <a href="#">Category</a>
+                </dd>
+              </dl>
+            </div>
+            <!-- /box -->
+            <hr class="noscreen" />
+          </div>
+          <!-- /col-l -->
+          <!-- Sidebar -->
+          <div id="col-r" class="noprint">
+            <!-- Login -->
+            <div id="signup">
+              <h3>Přihlášení</h3>
+              <div class="in">
+                <form action="#" method="get">
+                  <table class="nom">
+                    <tr>
+                      <td><label for="inp-user">Username:</label></td>
+                      <td colspan="2">
+                        <input
+                          type="text"
+                          size="30"
+                          style="width: 190px"
+                          name=""
+                          id="inp-user"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="inp-pass">Password:</label></td>
+                      <td colspan="2">
+                        <input
+                          type="text"
+                          size="30"
+                          style="width: 190px"
+                          name=""
+                          id="inp-pass"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="smaller">
+                        <input type="checkbox" name="" id="inp-remember" />
+                        <label
+                          for="inp-remember"
+                          title="Remember me for 14 days"
+                          class="help"
+                          >Remember</label
+                        >
+                      </td>
+                      <td class="t-right">
+                        <input
+                          type="image"
+                          value="Login"
+                          src="design/signup-button.gif"
+                        />
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <!-- /in -->
+              <div class="in02">
+                <ul class="nom">
+                  <li class="ico-reg">
+                    <strong><a href="#">Registration</a></strong>
+                  </li>
+                  <li class="ico-send">
+                    <a href="#">Forgot your password?</a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /in02 -->
+            </div>
+            <!-- /signup -->
+            <hr class="noscreen" />
+            <div id="signup-bottom"></div>
+            <!-- Tabs -->
+            <hr class="noscreen" />
+          </div>
+          <!-- /col-r -->
+        </div>
+        <!-- /box -->
+        <div class="title01-top"></div>
+        <div class="title01-bottom"></div>
+        <div class="box">
+          <div id="products" class="productsArr">
+            <!-- ////////////PRODUCTS//////////// -->
+          </div>
+        </div>
+        <!-- /box -->
+        <p class="t-center"><a href="#" id="testButton">Show more &raquo;</a></p>
+      </div>
+      <!-- /page -->
+      <div id="customerForm">
+        <table>
+          <tr>
+            <td style="width: 120px"><strong>Customer Type:</strong></td>
+            <td>
+              <select name="type" id="ctype">
+                <option value="pr">Privat</option>
+                <option value="fi">Firma</option>
+                <option value="of">Offentlig</option>
+                <option value="fo">Forening</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>CVR</strong></td>
+            <td><input type="text" size="35" name="dvr" id="ccvr" /></td>
+          </tr>
+          <tr>
+            <td><strong>Name:</strong></td>
+            <td><input type="text" size="35" name="name" id="cname" /></td>
+          </tr>
+          <tr>
+            <td><strong>Address:</strong></td>
+            <td><input type="text" size="35" name="address" id="caddress" /></td>
+          </tr>
+          <tr>
+            <td><strong>ZIP code:</strong></td>
+            <td><input type="text" size="10" name="zip" id="czip" /></td>
+          </tr>
+          <tr>
+            <td><strong>City:</strong></td>
+            <td><input type="text" size="35" name="city" id="ccity" /></td>
+          </tr>
+          <tr>
+            <td><strong>Country:</strong></td>
+            <td>
+              <select name="country" id="ccountry">
+                <option value="volvo">volvo</option>
+                <option value="saab">saab</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>E-mail:</strong></td>
+            <td><input type="text" size="35" name="email" id="cemail" value="@" /></td>
+          </tr>
+        </table>
       </div>
 
-    </div>
+      <div id="productForm">
+        <table>
+          <tr>
+            <td><strong>Name:</strong></td>
+            <td><input type="text" size="35" name="name" id="pname" /></td>
+          </tr>
+          <tr>
+            <td><strong>Price</strong></td>
+            <td><input type="number" size="35" name="price" id="pprice" /></td>
+          </tr>
+          <tr>
+            <td><strong>Comment:</strong></td>
+            <td><input type="text" size="35" name="comment" id="pcoment" /></td>
+          </tr>
+          <tr>
+            <td style="width: 120px"><strong>Category:</strong></td>
+            <td>
+              <select name="category" id="pcategory">
+                <option value="volvo">volvo</option>
+                <option value="saab">saab</option>
+                <option value="opel">opel</option>
+                <option value="audi">audi</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Image:</strong></td>
+            <td><input type="text" size="10" name="image" id="pimage" /></td>
+          </tr>
+          <tr>
+            <td><strong>Active:</strong></td>
+            <td><input type="checkbox" size="10" name="active" id="pactive" /></td>
+          </tr>
+        </table>
+        <table id="cart">
+          <!-- <tr>
+            <th>#</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Amount</th>
+          </tr> -->
 
-    <!-- close navigator -->
-  </div>
-  <div class="one-fourth">
-    <div class="heading_bg">
-      <h2>Headline</h2>
+        </table>
+      </div>
+
+      </div>
     </div>
-    <img src="img/demo/2.jpg" width="217" alt=""> </div>
-  <!-- Second Column -->
-  <div class="one-fourth">
-    <div class="heading_bg">
-      <h2>Lorem</h2>
-    </div>
-    <img src="img/demo/4.jpg" width="217" alt=""> </div>
-  <!-- Third Column -->
-  <div class="one-fourth">
-    <div class="heading_bg">
-      <h2>Ipsum</h2>
-    </div>
-    <img src="img/demo/3.jpg" width="217" alt=""> </div>
-  <!-- Fourth Column -->
-  <div class="one-fourth last">
-    <div class="heading_bg">
-      <h2>Last</h2>
-    </div>
-    <img src="img/demo/1.jpg" width="217" alt=""> </div>
-  <div style="clear:both; height: 40px"></div>
-</div>
-<!-- END container -->
-<div id="footer">
-  <!-- First Column -->
-  <div class="one-fourth">
-    <h3>Useful Links</h3>
-    <ul class="footer_links">
-      <li><a href="#">Lorem Ipsum</a></li>
-      <li><a href="#">Ellem Ciet</a></li>
-      <li><a href="#">Currivitas</a></li>
-      <li><a href="#">Salim Aritu</a></li>
-    </ul>
-  </div>
-  <!-- Second Column -->
-  <div class="one-fourth">
-    <h3>Terms</h3>
-    <ul class="footer_links">
-      <li><a href="#">Lorem Ipsum</a></li>
-      <li><a href="#">Ellem Ciet</a></li>
-      <li><a href="#">Currivitas</a></li>
-      <li><a href="#">Salim Aritu</a></li>
-    </ul>
-  </div>
-  <!-- Third Column -->
-  <div class="one-fourth">
-    <h3>Information</h3>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet enim id dui tincidunt vestibulum rhoncus a felis.
-    <div id="social_icons"> Theme by <a href="http://www.csstemplateheaven.com">CssTemplateHeaven</a><br>
-      Photos © <a href="http://dieterschneider.net">Dieter Schneider</a> </div>
-  </div>
-  <!-- Fourth Column -->
-  <div class="one-fourth last">
-    <h3>Socialize</h3>
-    <img src="img/icon_fb.png" alt=""> <img src="img/icon_twitter.png" alt=""> <img src="img/icon_in.png" alt=""> </div>
-  <div style="clear:both"></div>
-</div>
-<!-- END footer -->
-</body>
+    <!-- /main -->
+  </body>
 </html>
