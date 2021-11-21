@@ -14,18 +14,18 @@ async function getCustomerById({ id }) {
     `SELECT * FROM customer WHERE customer.customerId = (?)`,
     [id]
   );
-  let res = [];
+  let res = {};
   rows.forEach((item) => {
-    res.push(item);
+    res = item;
   });
   return res;
 }
 
-async function postNewCustomer({ CompanyTypeId, CompanyName, CVR, Name, Address, Zipcode, City, CountryId, Phone, Email, Comment, CreateDate, ModifiedDate, Active,
-}) {
+async function postNewCustomer({ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email}) {
+  console.log(CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email);
   const res = await db.query(
-    `INSERT INTO customer (CompanyTypeId, CompanyName, CVR, Name, Address, Zipcode, City, CountryId, Phone, Email, Comment, CreateDate, ModifiedDate, Active) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-    [ CompanyTypeId, CompanyName, CVR, Name, Address, Zipcode, City, CountryId, Phone, Email, Comment, CreateDate, ModifiedDate, Active, ]
+    `INSERT INTO customer (CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email) VALUES (?,?,?,?,?,?,?,?)`,
+    [ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email]
   );
   if (res.affectedRows) {
     return `New customer added! /n ${JSON.stringify(res)}`;

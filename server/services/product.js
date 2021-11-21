@@ -1,6 +1,6 @@
-const db = require("./db");
-const helper = require("../helper");
-const config = require("../config");
+const db = require('./db');
+const helper = require('../helper');
+const config = require('../config');
 
 async function getMultiple(page = 1) {
   const offset = helper.getOffset(page, config.listPerPage);
@@ -14,29 +14,36 @@ async function getMultiple(page = 1) {
   };
 }
 
+async function getProductById(id) {
+  const res = await db.query(`SELECT * FROM product WHERE ProductId = (?)`, [
+    id,
+  ]);
+
+  return {
+    res,
+  };
+}
+
 async function create(product) {
   const result = await db.query(
     `INSERT INTO product 
-      (PartNumber, Name, Price, Comment, ProductCategoryId, ImageFile, CreateDate, ModifiedDate, Active) 
+      (Name, Price, Comment, ProductCategoryId, ImageFile, Active) 
       VALUES 
-      (?, ?, ?, ?,?, ?, ?, ?, ?)`,
+      (?, ?, ?, ?,?, ?)`,
     [
-      product.PartNumber,
       product.Name,
       product.Price,
       product.Comment,
       product.ProductCategoryId,
       product.ImageFile,
-      product.CreateDate,
-      product.ModifiedDate,
       product.Active,
     ]
   );
 
-  let message = "Error in creating product";
+  let message = 'Error in creating product';
 
   if (result.affectedRows) {
-    message = "product created successfully";
+    message = 'product created successfully';
   }
 
   return { message };
@@ -62,10 +69,10 @@ async function update(id, product) {
     ]
   );
 
-  let message = "Error in updating product";
+  let message = 'Error in updating product';
 
   if (result.affectedRows) {
-    message = "product updated successfully";
+    message = 'product updated successfully';
   }
 
   return { message };
@@ -74,10 +81,10 @@ async function update(id, product) {
 async function remove(id) {
   const result = await db.query(`DELETE FROM product WHERE productid=?`, [id]);
 
-  let message = "Error in deleting product";
+  let message = 'Error in deleting product';
 
   if (result.affectedRows) {
-    message = "product deleted successfully";
+    message = 'product deleted successfully';
   }
 
   return { message };
@@ -88,4 +95,5 @@ module.exports = {
   create,
   update,
   remove,
+  getProductById,
 };

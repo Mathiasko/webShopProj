@@ -11,6 +11,7 @@ const languagesRouter = require('./routes/language');
 const productsRouter = require('./routes/product');
 const productCategotyRouter = require('./routes/productCategory');
 const customerRouter = require('./routes/customer');
+const login = require('./routes/login');
 
 app.use(
   cors({
@@ -33,6 +34,7 @@ app.use('/language', languagesRouter);
 app.use('/product', productsRouter);
 app.use('/productCategory', productCategotyRouter);
 app.use('/customer', customerRouter);
+app.use('/login', login);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

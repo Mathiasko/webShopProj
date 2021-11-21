@@ -9,13 +9,16 @@
       type="text/css"
       href="css/main.css"
     />
-    <link rel="stylesheet" href="css/own.css">
+    <link rel="stylesheet" href="css/own.css" />
     <link rel="stylesheet" media="print" type="text/css" href="css/print.css" />
     <script type="text/javascript" src="js/prototype.js" defer></script>
     <script type="text/javascript" src="js/tabs.js" defer></script>
     <script type="text/javascript" src="js/showdetail.js" defer></script>
     <script src="js/index.js" defer></script>
-    <script src="https://kit.fontawesome.com/c79de776ac.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/c79de776ac.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div id="main">
@@ -43,37 +46,32 @@
             <div class="title01-top"></div>
             <div class="title01">
               <div class="title01-in">
-                <p class="f-right noprint">
-                  <strong><a href="#" class="add">Submit a Site</a></strong>
-                </p>
                 <h2 class="ico-list">Katalog</h2>
               </div>
             </div>
             <div class="title01-bottom"></div>
             <div class="box">
               <dl class="cat">
-                <dt><a href="#">Some Category</a></dt>
+                <dt><a href="#" id="allProducts">All Products</a></dt>
                 <dd>
-                  <a href="#">Category</a>, <a href="#">Category</a>,
-                  <a href="#">Category</a>, <a href="#">Category</a>
+                  <a href="#" class="productCategory" data-id="1"
+                    >Men's clothing</a
+                  >,
+                  <a href="#" class="productCategory" data-id="4">Jewelery</a>,
+                  <a href="#" class="productCategory" data-id="2">Electronics</a
+                  >,
+                  <a href="#" class="productCategory" data-id="5"
+                    >women's clothing</a
+                  >,
+                  <a href="#" class="productCategory" data-id="3">Bicycles</a>
                 </dd>
-                <dt><a href="#">Some Category</a></dt>
+                <dt><a href="#">Account</a></dt>
                 <dd>
-                  <a href="#">Category</a>, <a href="#">Category</a>,
-                  <a href="#">Category</a>, <a href="#">Category</a>
+                  <a href="#">Login</a>, <a href="#" id="signup">SignUp</a>
                 </dd>
               </dl>
               <dl class="cat f-right">
-                <dt><a href="#">Some Category</a></dt>
-                <dd>
-                  <a href="#">Category</a>, <a href="#">Category</a>,
-                  <a href="#">Category</a>, <a href="#">Category</a>
-                </dd>
-                <dt><a href="#">Some Category</a></dt>
-                <dd>
-                  <a href="#">Category</a>, <a href="#">Category</a>,
-                  <a href="#">Category</a>, <a href="#">Category</a>
-                </dd>
+                <dt><a href="#" id="manageStore">Manage store</a></dt>
               </dl>
             </div>
             <!-- /box -->
@@ -128,6 +126,7 @@
                           type="image"
                           value="Login"
                           src="design/signup-button.gif"
+                          id="login"
                         />
                       </td>
                     </tr>
@@ -164,19 +163,21 @@
           </div>
         </div>
         <!-- /box -->
-        <p class="t-center"><a href="#" id="testButton">Show more &raquo;</a></p>
+        <p class="t-center">
+          <a href="#" id="testButton">Show more &raquo;</a>
+        </p>
       </div>
       <!-- /page -->
-      <div id="customerForm">
+      <div id="customerForm" class="hidden">
         <table>
           <tr>
             <td style="width: 120px"><strong>Customer Type:</strong></td>
             <td>
               <select name="type" id="ctype">
-                <option value="pr">Privat</option>
-                <option value="fi">Firma</option>
-                <option value="of">Offentlig</option>
-                <option value="fo">Forening</option>
+                <option value="1" selected="selected">Privat</option>
+                <option value="2">Firma</option>
+                <option value="3">Offentlig</option>
+                <option value="4">Forening</option>
               </select>
             </td>
           </tr>
@@ -190,7 +191,9 @@
           </tr>
           <tr>
             <td><strong>Address:</strong></td>
-            <td><input type="text" size="35" name="address" id="caddress" /></td>
+            <td>
+              <input type="text" size="35" name="address" id="caddress" />
+            </td>
           </tr>
           <tr>
             <td><strong>ZIP code:</strong></td>
@@ -204,66 +207,77 @@
             <td><strong>Country:</strong></td>
             <td>
               <select name="country" id="ccountry">
-                <option value="volvo">volvo</option>
-                <option value="saab">saab</option>
+                <option value="1" selected="selected">Denmark</option>
+                <option value="2">Sweden</option>
+                <option value="3">Norway</option>
               </select>
             </td>
           </tr>
           <tr>
             <td><strong>E-mail:</strong></td>
-            <td><input type="text" size="35" name="email" id="cemail" value="@" /></td>
-          </tr>
-        </table>
-      </div>
-
-      <div id="productForm">
-        <table>
-          <tr>
-            <td><strong>Name:</strong></td>
-            <td><input type="text" size="35" name="name" id="pname" /></td>
-          </tr>
-          <tr>
-            <td><strong>Price</strong></td>
-            <td><input type="number" size="35" name="price" id="pprice" /></td>
-          </tr>
-          <tr>
-            <td><strong>Comment:</strong></td>
-            <td><input type="text" size="35" name="comment" id="pcoment" /></td>
-          </tr>
-          <tr>
-            <td style="width: 120px"><strong>Category:</strong></td>
             <td>
-              <select name="category" id="pcategory">
-                <option value="volvo">volvo</option>
-                <option value="saab">saab</option>
-                <option value="opel">opel</option>
-                <option value="audi">audi</option>
-              </select>
+              <input type="text" size="35" name="email" id="cemail" value="@" />
             </td>
           </tr>
-          <tr>
-            <td><strong>Image:</strong></td>
-            <td><input type="text" size="10" name="image" id="pimage" /></td>
-          </tr>
-          <tr>
-            <td><strong>Active:</strong></td>
-            <td><input type="checkbox" size="10" name="active" id="pactive" /></td>
-          </tr>
         </table>
-        <table id="cart">
-          <!-- <tr>
-            <th>#</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Amount</th>
-          </tr> -->
-
-        </table>
+        <button id="submitCustomer">Submit</button>
       </div>
 
+      <div id="productForm" class="hiddennn manageStore">
+        <div>
+          <table>
+            <tr>
+              <td><strong>Name:</strong></td>
+              <td><input type="text" size="35" name="name" id="pname" /></td>
+            </tr>
+            <tr>
+              <td><strong>Price</strong></td>
+              <td>
+                <input type="number" size="35" name="price" id="pprice" />
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Comment:</strong></td>
+              <td>
+                <textarea type="text" rows="6" cols="40" name="comment" id="pcomment"></textarea> 
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 120px"><strong>Category:</strong></td>
+              <td>
+                <select name="category" id="pcategory">
+                  <option selected="selected" id="categorySelect">
+                    Select
+                  </option>
+                  <option value="1">men's clothing</option>
+                  <option value="2">women's clothing</option>
+                  <option value="3">electronics</option>
+                  <option value="2">jewelery</option>
+                  <option value="5">bicycles</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Image:</strong></td>
+              <td><input type="text" size="10" name="image" id="pimage" /></td>
+            </tr>
+            <tr>
+              <td><strong>Active:</strong></td>
+              <td>
+                <input type="checkbox" size="10" name="active" id="pactive" />
+              </td>
+            </tr>
+          </table>
+          <button id="submitProduct">Submit</button>
+        </div>
+        <div>
+          <input type="number" id="productId">
+          <button class="goButton" id="goButton">Go</button>
+        </div>
+      </div>
+      <div>
+        <table id="cart"></table>
       </div>
     </div>
-    <!-- /main -->
   </body>
 </html>
