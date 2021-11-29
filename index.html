@@ -11,9 +11,7 @@
     />
     <link rel="stylesheet" href="css/own.css" />
     <link rel="stylesheet" media="print" type="text/css" href="css/print.css" />
-    <script type="text/javascript" src="js/prototype.js" defer></script>
-    <script type="text/javascript" src="js/tabs.js" defer></script>
-    <script type="text/javascript" src="js/showdetail.js" defer></script>
+
     <script src="js/index.js" defer></script>
     <script
       src="https://kit.fontawesome.com/c79de776ac.js"
@@ -77,8 +75,6 @@
             <!-- /box -->
             <hr class="noscreen" />
           </div>
-          <!-- /col-l -->
-          <!-- Sidebar -->
           <div id="col-r" class="noprint">
             <!-- Login -->
             <div id="signup">
@@ -133,28 +129,22 @@
                   </table>
                 </form>
               </div>
-              <!-- /in -->
               <div class="in02">
                 <ul class="nom">
                   <li class="ico-reg">
-                    <strong><a href="#">Registration</a></strong>
+                    <strong><a id="registration" href="#">Registration</a></strong>
                   </li>
                   <li class="ico-send">
                     <a href="#">Forgot your password?</a>
                   </li>
                 </ul>
               </div>
-              <!-- /in02 -->
             </div>
-            <!-- /signup -->
             <hr class="noscreen" />
             <div id="signup-bottom"></div>
-            <!-- Tabs -->
             <hr class="noscreen" />
           </div>
-          <!-- /col-r -->
         </div>
-        <!-- /box -->
         <div class="title01-top"></div>
         <div class="title01-bottom"></div>
         <div class="box">
@@ -162,13 +152,18 @@
             <!-- ////////////PRODUCTS//////////// -->
           </div>
         </div>
-        <!-- /box -->
         <p class="t-center">
           <a href="#" id="testButton">Show more &raquo;</a>
         </p>
       </div>
-      <!-- /page -->
-      <div id="customerForm" class="hidden">
+
+      <!-- CUSTOMER FORM -->
+
+      <div id="customerForm" data-customerId class="hidden">
+        <div class="flex">
+          <button class="postNew" id="postNewCustomer">Post New</button>
+          <p id="customerAlertPrompt"></p>
+        </div>
         <table>
           <tr>
             <td style="width: 120px"><strong>Customer Type:</strong></td>
@@ -221,10 +216,20 @@
           </tr>
         </table>
         <button id="submitCustomer">Submit</button>
-      </div>
-
-      <div id="productForm" class="hiddennn manageStore">
         <div>
+          <h3>Select customer with ID:</h3>
+          <input type="number" id="customerId" />
+          <button class="goButton" id="seekCustomer">Go</button>
+        </div>
+      </div>
+      <!-- Product Form -->
+
+      <div id="productForm" data-productId class="manageStore hidden">
+        <div>
+          <div class="flex">
+            <button class="postNew" id="postNewProduct">Post new</button>
+            <p id="productAlertPrompt"></p>
+          </div>
           <table>
             <tr>
               <td><strong>Name:</strong></td>
@@ -239,7 +244,13 @@
             <tr>
               <td><strong>Comment:</strong></td>
               <td>
-                <textarea type="text" rows="6" cols="40" name="comment" id="pcomment"></textarea> 
+                <textarea
+                  type="text"
+                  rows="6"
+                  cols="40"
+                  name="comment"
+                  id="pcomment"
+                ></textarea>
               </td>
             </tr>
             <tr>
@@ -268,11 +279,17 @@
               </td>
             </tr>
           </table>
-          <button id="submitProduct">Submit</button>
+          <div class="flex">
+            <button class="submit" id="submitProduct">Submit</button>
+            <button class="delete" id="submitDelete">
+              Delete this product
+            </button>
+          </div>
         </div>
         <div>
-          <input type="number" id="productId">
-          <button class="goButton" id="goButton">Go</button>
+          <h3>Select product with ID:</h3>
+          <input type="number" id="productId" />
+          <button class="goButton" id="seekProduct">Go</button>
         </div>
       </div>
       <div>

@@ -48,11 +48,14 @@ const productCategory = <HTMLInputElement>document.getElementById('pcategory');
 const productImage = <HTMLInputElement>document.getElementById('pimage');
 const productActive = <HTMLInputElement>document.getElementById('pactive');
 const submitProduct = document.getElementById('submitProduct');
+const submitDelete = document.getElementById('submitDelete');
 const categorySelect = document.getElementById('categorySelect');
 
 const cart = document.getElementById('cart');
 const testButton = document.getElementById('testButton');
 const cartCount = document.getElementById('cartCount');
+const postNewCustomer = document.getElementById('postNewCustomer');
+const postNewProduct = document.getElementById('postNewProduct');
 const login = document.getElementById('login');
 const signup = document.getElementById('signup');
 const password = <HTMLInputElement>document.getElementById('inp-pass');
@@ -62,12 +65,19 @@ const customerForm = document.getElementById('customerForm');
 const productForm = document.getElementById('productForm');
 const manageStore = document.getElementById('manageStore');
 const productId = <HTMLInputElement>document.getElementById('productId');
-const goButton = document.getElementById('goButton');
+const customerId = <HTMLInputElement>document.getElementById('customerId');
+const seekProduct = document.getElementById('seekProduct');
+const seekCustomer = document.getElementById('seekCustomer');
+const customerAlertPrompt = document.getElementById('customerAlertPrompt');
+const productAlertPrompt = document.getElementById('productAlertPrompt');
+const registration = document.getElementById('registration');
 
 class WebShop {
   cart: CartProduct[] = [];
   products: Product[] = [];
   constructor() {}
+
+  // <-----Customer----->
   getCustomers() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -79,36 +89,78 @@ class WebShop {
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send();
   }
-  getCustomer(id: Number) {
+  getCustomerById(id: Number) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(`Found ${JSON.parse(xhttp.responseText).Name}`);
-        console.log(JSON.parse(xhttp.responseText));
+        let customer = JSON.parse(xhttp.responseText);
+
+        self.fillCustomerEdit(customer);
       }
     };
     xhttp.open('GET', `http://localhost:3000/customer/${id}`);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send();
   }
-  postNewCustomer(payload: Customer) {
+  fillCustomerEdit(customer?: Customer) {
+    if (customer) {
+      customerType.value = `${customer.CompanyTypeId}`;
+      customerCvr.value = customer.CVR;
+      customerName.value = customer.Name;
+      customerAddress.value = customer.Address;
+      customerZip.value = customer.Zipcode;
+      customerCity.value = customer.City;
+      customerCountry.value = `${customer.CountryId}`;
+      customerEmail.value = customer.Email;
+      customerForm.dataset.customerId = `${customer.CustomerId}`;
+      this.customerPrompt(customer.Name);
+    } else {
+      customerType.value = '1';
+      customerCvr.value = '';
+      customerName.value = '';
+      customerAddress.value = '';
+      customerZip.value = '';
+      customerCity.value = '';
+      customerCountry.value = '1';
+      customerEmail.value = '@';
+      customerForm.dataset.customerId = '';
+      this.customerPrompt();
+    }
+  }
+  postNewCustomer(customer: Customer) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(`New customer added`);
+        self.customerPrompt('', JSON.parse(xhttp.responseText).message);
       } else {
         console.log(this.status);
       }
     };
     xhttp.open('POST', `http://localhost:3000/customer`);
     xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.send(JSON.stringify(payload));
+    xhttp.send(JSON.stringify(customer));
   }
-  deleteCustomer(id: Number) {
+  updateCustomer(id: number, customer: Customer) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(JSON.parse(xhttp.responseText));
+        self.customerPrompt('', JSON.parse(xhttp.responseText).message);
+      }
+    };
+    xhttp.open('PUT', `http://localhost:3000/customer/${id}`);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send(JSON.stringify(customer));
+  }
+  deleteCustomer(id: Number) {
+    const xhttp = new XMLHttpRequest();
+    const self = this;
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        self.customerPrompt('', JSON.parse(xhttp.responseText).message);
       }
     };
     xhttp.open('DELETE', `http://localhost:3000/customer/${id}`);
@@ -117,17 +169,44 @@ class WebShop {
   }
   reviveCustomer(id: Number) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(JSON.parse(xhttp.responseText));
+        self.customerPrompt('', JSON.parse(xhttp.responseText).message);
       }
     };
     xhttp.open('PUT', `http://localhost:3000/customer/${id}`);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send();
   }
-  showProducts(products: Product[]) {
-    this.hideProducts();
+  customerPrompt(name?: string, message?: string) {
+    if (!message) {
+      if (customerForm.dataset.customerId) {
+        customerAlertPrompt.innerHTML = `You are about to edit ${name}.`;
+        submitDelete.classList.remove('hidden');
+      } else {
+        customerAlertPrompt.innerHTML = 'You are creating new customer!';
+        submitDelete.classList.add('hidden');
+      }
+    } else {
+      customerAlertPrompt.innerHTML = message;
+    }
+  }
+  hideManageCustomer() {
+    customerForm.classList.add('hidden');
+  }
+  showManageCustomer() {
+    customerForm.classList.remove('hidden');
+  }
+
+  // <-----Products----->
+  renderProducts(products: Product[], category?) {
+    productsContainer.innerHTML = '';
+    const productTitle = document.createElement('h2');
+    productTitle.classList.add('productTitle');
+    productTitle.innerHTML = category ? category : 'All products';
+    productsContainer.appendChild(productTitle);
+
     products.forEach((product) => {
       const productDiv = document.createElement('div');
       productDiv.classList.add('card');
@@ -165,7 +244,7 @@ class WebShop {
         console.log(JSON.parse(xhttp.responseText).data);
         let allProducts = JSON.parse(xhttp.responseText).data;
         self.products = allProducts;
-        self.showProducts(allProducts);
+        self.renderProducts(allProducts);
       }
     };
     xhttp.open('GET', `http://localhost:3000/product/?page=1`);
@@ -187,22 +266,39 @@ class WebShop {
     xhttp.send();
     return xhttp.responseText;
   }
-  fillProductEdit(product: Product) {
-    productName.value = product.Name;
-    productPrice.value = product.Price;
-    productComment.value = product.Comment;
-    productImage.value = product.ImageFile;
-    productCategory.value = `${product.ProductCategoryId}`;
-    productActive.value = `${product.Active}`;
+  fillProductEdit(product?: Product) {
+    if (product) {
+      productName.value = product.Name;
+      productPrice.value = product.Price;
+      productComment.value = product.Comment;
+      productImage.value = product.ImageFile;
+      productCategory.value = `${product.ProductCategoryId}`;
+      productActive.checked = product.Active ? true : false;
+      productForm.dataset.productId = `${product.ProductId}`;
+      this.productPrompt(product.Name);
+    } else {
+      productName.value = '';
+      productPrice.value = '';
+      productComment.value = '';
+      productImage.value = '';
+      productCategory.value = '';
+      productActive.checked = false;
+      this.productPrompt();
+    }
   }
   hideProducts() {
-    productsContainer.innerHTML = '';
+    productsContainer.classList.add('hidden');
+  }
+  showProducts() {
+    productsContainer.classList.remove('hidden');
   }
   postNewProduct(payload: Product) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(JSON.parse(xhttp.responseText));
+        self.productPrompt('', JSON.parse(xhttp.responseText).message);
       }
     };
     xhttp.open('POST', `http://localhost:3000/product/`);
@@ -211,9 +307,12 @@ class WebShop {
   }
   deleteProduct(id: Number) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(JSON.parse(xhttp.responseText));
+        self.productPrompt('', JSON.parse(xhttp.responseText).message);
+        self.fillProductEdit();
       }
     };
     xhttp.open('DELETE', `http://localhost:3000/product/${id}`);
@@ -222,15 +321,31 @@ class WebShop {
   }
   updateProduct(id: Number, product: Product) {
     const xhttp = new XMLHttpRequest();
+    const self = this;
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(JSON.parse(xhttp.responseText));
+        self.productPrompt('', JSON.parse(xhttp.responseText).message);
       }
     };
     xhttp.open('PUT', `http://localhost:3000/product/${id}`);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send(JSON.stringify(product));
   }
+  productPrompt(name?: string, message?: string) {
+    if (!message) {
+      if (productForm.dataset.productId) {
+        productAlertPrompt.innerHTML = `You are about to edit ${name}.`;
+        submitDelete.classList.remove('hidden');
+      } else {
+        productAlertPrompt.innerHTML = 'You are posting new product!';
+        submitDelete.classList.add('hidden');
+      }
+    } else {
+      productAlertPrompt.innerHTML = message;
+    }
+  }
+
+  // <-----CATEGORIES----->
   getProductCategories() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -266,6 +381,8 @@ class WebShop {
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send();
   }
+
+  // <-----CART----->
   updateCart() {
     cartCount.innerHTML = `(${this.cart.length})`;
   }
@@ -423,7 +540,6 @@ class WebShop {
   }
 
   // <-----ACCOUNT----->
-
   login(email: string) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -451,18 +567,24 @@ class WebShop {
   showManageStore() {
     productForm.classList.remove('hidden');
   }
+  hideManageStore() {
+    productForm.classList.add('hidden');
+  }
 }
 
 const shop = new WebShop();
 
-goButton.addEventListener('click', (e) => {
+seekProduct.addEventListener('click', (e) => {
   shop.getProductById(productId.value);
 });
-
+seekCustomer.addEventListener('click', (e) => {
+  shop.getCustomerById(parseInt(customerId.value));
+});
 manageStore.addEventListener('click', (e) => {
+  shop.hideProducts();
+  shop.hideManageCustomer();
   shop.showManageStore();
 });
-
 login.addEventListener('click', (e) => {
   e.preventDefault();
   if (!(email.value && password.value)) {
@@ -471,61 +593,51 @@ login.addEventListener('click', (e) => {
     shop.login(email.value);
   }
 });
-
-signup.addEventListener('click', (e) => {
-  shop.hideProducts();
-  shop.showSignUp();
-});
-
 allProducts.addEventListener('click', (e) => {
-  shop.showProducts(shop.products);
+  shop.renderProducts(shop.products);
+  shop.showProducts();
+  shop.hideManageCustomer();
+  shop.hideManageStore();
 });
-
 productCategories.forEach((category) => {
   category.addEventListener('click', (e) => {
+    shop.showProducts();
+    shop.hideManageCustomer();
+    shop.hideManageStore();
     const filteredProducts = shop.products.filter((product) => {
       return product.ProductCategoryId === parseInt(e.target.dataset.id);
     });
-    shop.showProducts(filteredProducts);
+    let category = '';
+    console.log(productCategories[2].text);
+
+    switch (parseInt(e.target.dataset.id)) {
+      case 1:
+        category = "Men's clothing";
+        break;
+      case 2:
+        category = 'Jewelery';
+        break;
+      case 3:
+        category = 'Electronics';
+        break;
+      case 4:
+        category = "Women's clothing";
+        break;
+      case 5:
+        category = 'Bicycles';
+        break;
+      default:
+        break;
+    }
+
+    shop.renderProducts(filteredProducts, category);
   });
 });
-
-submitCustomer.addEventListener('click', (e) => {
-  e.preventDefault();
-
-  let newCustomer: Customer = {
-    CompanyTypeId: null,
-    CVR: null,
-    Name: null,
-    Address: null,
-    Zipcode: null,
-    City: null,
-    CountryId: null,
-    Email: null,
-  };
-
-  newCustomer.CompanyTypeId = parseInt(customerType.value);
-  newCustomer.CVR = customerCvr.value;
-  newCustomer.Name = customerName.value;
-  newCustomer.Address = customerAddress.value;
-  newCustomer.Zipcode = customerZip.value;
-  newCustomer.City = customerCity.value;
-  newCustomer.CountryId = parseInt(customerCountry.value);
-  newCustomer.Email = customerEmail.value;
-
-  console.log(newCustomer);
-
-  shop.postNewCustomer(newCustomer);
-});
-
 productCategory.addEventListener('mousedown', (e) => {
   categorySelect.remove();
 });
-
 submitProduct.addEventListener('click', (e) => {
   e.preventDefault();
-
-  console.log(productComment.value);
 
   let newProduct: Product = {
     Name: null,
@@ -543,23 +655,70 @@ submitProduct.addEventListener('click', (e) => {
   newProduct.ImageFile = productImage.value;
   newProduct.Active = productActive.checked ? 1 : 0;
 
-  console.log(newProduct);
-
-  shop.postNewProduct(newProduct);
+  if (!productForm.dataset.productId) {
+    shop.postNewProduct(newProduct);
+  } else {
+    shop.updateProduct(parseInt(productForm.dataset.productId), newProduct);
+  }
 });
+submitCustomer.addEventListener('click', (e) => {
+  e.preventDefault();
 
+  let newCustomer: Customer = {
+    Name: null,
+    Address: null,
+    CVR: null,
+    City: null,
+    CompanyTypeId: null,
+    CountryId: null,
+    Email: null,
+    Zipcode: null,
+  };
+
+  newCustomer.Name = customerName.value;
+  newCustomer.Address = customerAddress.value;
+  newCustomer.CVR = customerCvr.value;
+  newCustomer.City = customerCity.value;
+  newCustomer.CompanyTypeId = parseInt(customerType.value);
+  newCustomer.CountryId = parseInt(customerCountry.value);
+  newCustomer.Email = customerEmail.value;
+  newCustomer.Zipcode = customerZip.value;
+
+  if (!customerForm.dataset.productId) {
+    shop.postNewCustomer(newCustomer);
+  } else {
+    shop.updateCustomer(parseInt(productForm.dataset.productId), newCustomer);
+  }
+});
+postNewProduct.addEventListener('click', (e) => {
+  productForm.dataset.productId = '';
+  shop.fillProductEdit();
+});
+postNewCustomer.addEventListener('click', (e) => {
+  customerForm.dataset.productId = '';
+  shop.fillCustomerEdit();
+});
 testButton.addEventListener('click', (e) => {
   e.preventDefault();
   shop.showCart();
   shop.hideProducts();
 });
+submitDelete.addEventListener('click', (e) => {
+  shop.deleteProduct(parseInt(productForm.dataset.productId));
+});
+registration.addEventListener('click', (e) => {
+  shop.hideProducts();
+  shop.showManageCustomer();
+  shop.hideManageStore();
+});
 
+shop.getProducts();
 shop.getProductCategories();
-// shop.getProducts();
+
 // shop.postNewProductCategory({productCategoryName: "maros"})
 // shop.deleteProductCategory(29);
-shop.getCustomers();
-shop.getCustomer(8);
+// shop.getCustomers();
+// shop.getCustomer(8);
 
 // const newCustomer = {
 //   Active: 1,
@@ -578,22 +737,10 @@ shop.getCustomer(8);
 //   Zipcode: '6294',
 // };
 
-// shop.postNewCustomer(newCustomer)
+// shop.postNewCustomer(newCustomer);
 // shop.deleteCustomer(22);
 // shop.reviveCustomer(22);
 
-const newProduct = {
-  Active: 1,
-  Comment: 'hmmmm dobra!',
-  CreateDate: '2021-09-08T11:19:15.000Z',
-  ImageFile: 'M215.jpg',
-  ModifiedDate: '2021-10-13T11:19:15.000Z',
-  Name: 'Ferkovica updated',
-  PartNumber: 'V487XXA',
-  Price: '139.01',
-  ProductCategoryId: 9,
-};
-// shop.postNewProduct(newProduct);
-// shop.deleteProduct(12);
-// shop.updateProduct(11, newProduct)
 shop.updateCart();
+shop.productPrompt();
+shop.customerPrompt();

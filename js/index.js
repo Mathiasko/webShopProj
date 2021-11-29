@@ -17,10 +17,13 @@ var productCategory = document.getElementById('pcategory');
 var productImage = document.getElementById('pimage');
 var productActive = document.getElementById('pactive');
 var submitProduct = document.getElementById('submitProduct');
+var submitDelete = document.getElementById('submitDelete');
 var categorySelect = document.getElementById('categorySelect');
 var cart = document.getElementById('cart');
 var testButton = document.getElementById('testButton');
 var cartCount = document.getElementById('cartCount');
+var postNewCustomer = document.getElementById('postNewCustomer');
+var postNewProduct = document.getElementById('postNewProduct');
 var login = document.getElementById('login');
 var signup = document.getElementById('signup');
 var password = document.getElementById('inp-pass');
@@ -30,7 +33,12 @@ var customerForm = document.getElementById('customerForm');
 var productForm = document.getElementById('productForm');
 var manageStore = document.getElementById('manageStore');
 var productId = document.getElementById('productId');
-var goButton = document.getElementById('goButton');
+var customerId = document.getElementById('customerId');
+var seekProduct = document.getElementById('seekProduct');
+var seekCustomer = document.getElementById('seekCustomer');
+var customerAlertPrompt = document.getElementById('customerAlertPrompt');
+var productAlertPrompt = document.getElementById('productAlertPrompt');
+var registration = document.getElementById('registration');
 var WebShop = /** @class */ (function () {
     function WebShop() {
         var _this = this;
@@ -56,6 +64,7 @@ var WebShop = /** @class */ (function () {
             _this.showCart();
         };
     }
+    // <-----Customer----->
     WebShop.prototype.getCustomers = function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -67,23 +76,51 @@ var WebShop = /** @class */ (function () {
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send();
     };
-    WebShop.prototype.getCustomer = function (id) {
+    WebShop.prototype.getCustomerById = function (id) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log("Found " + JSON.parse(xhttp.responseText).Name);
-                console.log(JSON.parse(xhttp.responseText));
+                var customer = JSON.parse(xhttp.responseText);
+                self.fillCustomerEdit(customer);
             }
         };
         xhttp.open('GET', "http://localhost:3000/customer/" + id);
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send();
     };
-    WebShop.prototype.postNewCustomer = function (payload) {
+    WebShop.prototype.fillCustomerEdit = function (customer) {
+        if (customer) {
+            customerType.value = "" + customer.CompanyTypeId;
+            customerCvr.value = customer.CVR;
+            customerName.value = customer.Name;
+            customerAddress.value = customer.Address;
+            customerZip.value = customer.Zipcode;
+            customerCity.value = customer.City;
+            customerCountry.value = "" + customer.CountryId;
+            customerEmail.value = customer.Email;
+            customerForm.dataset.customerId = "" + customer.CustomerId;
+            this.customerPrompt(customer.Name);
+        }
+        else {
+            customerType.value = '1';
+            customerCvr.value = '';
+            customerName.value = '';
+            customerAddress.value = '';
+            customerZip.value = '';
+            customerCity.value = '';
+            customerCountry.value = '1';
+            customerEmail.value = '@';
+            customerForm.dataset.customerId = '';
+            this.customerPrompt();
+        }
+    };
+    WebShop.prototype.postNewCustomer = function (customer) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log("New customer added");
+                self.customerPrompt('', JSON.parse(xhttp.responseText).message);
             }
             else {
                 console.log(this.status);
@@ -91,13 +128,27 @@ var WebShop = /** @class */ (function () {
         };
         xhttp.open('POST', "http://localhost:3000/customer");
         xhttp.setRequestHeader('Content-Type', 'application/json');
-        xhttp.send(JSON.stringify(payload));
+        xhttp.send(JSON.stringify(customer));
     };
-    WebShop.prototype.deleteCustomer = function (id) {
+    WebShop.prototype.updateCustomer = function (id, customer) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 console.log(JSON.parse(xhttp.responseText));
+                self.customerPrompt('', JSON.parse(xhttp.responseText).message);
+            }
+        };
+        xhttp.open('PUT', "http://localhost:3000/customer/" + id);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(JSON.stringify(customer));
+    };
+    WebShop.prototype.deleteCustomer = function (id) {
+        var xhttp = new XMLHttpRequest();
+        var self = this;
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                self.customerPrompt('', JSON.parse(xhttp.responseText).message);
             }
         };
         xhttp.open('DELETE', "http://localhost:3000/customer/" + id);
@@ -106,17 +157,44 @@ var WebShop = /** @class */ (function () {
     };
     WebShop.prototype.reviveCustomer = function (id) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log(JSON.parse(xhttp.responseText));
+                self.customerPrompt('', JSON.parse(xhttp.responseText).message);
             }
         };
         xhttp.open('PUT', "http://localhost:3000/customer/" + id);
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send();
     };
-    WebShop.prototype.showProducts = function (products) {
-        this.hideProducts();
+    WebShop.prototype.customerPrompt = function (name, message) {
+        if (!message) {
+            if (customerForm.dataset.customerId) {
+                customerAlertPrompt.innerHTML = "You are about to edit " + name + ".";
+                submitDelete.classList.remove('hidden');
+            }
+            else {
+                customerAlertPrompt.innerHTML = 'You are creating new customer!';
+                submitDelete.classList.add('hidden');
+            }
+        }
+        else {
+            customerAlertPrompt.innerHTML = message;
+        }
+    };
+    WebShop.prototype.hideManageCustomer = function () {
+        customerForm.classList.add('hidden');
+    };
+    WebShop.prototype.showManageCustomer = function () {
+        customerForm.classList.remove('hidden');
+    };
+    // <-----Products----->
+    WebShop.prototype.renderProducts = function (products, category) {
+        productsContainer.innerHTML = '';
+        var productTitle = document.createElement('h2');
+        productTitle.classList.add('productTitle');
+        productTitle.innerHTML = category ? category : 'All products';
+        productsContainer.appendChild(productTitle);
         products.forEach(function (product) {
             var productDiv = document.createElement('div');
             productDiv.classList.add('card');
@@ -150,7 +228,7 @@ var WebShop = /** @class */ (function () {
                 console.log(JSON.parse(xhttp.responseText).data);
                 var allProducts_1 = JSON.parse(xhttp.responseText).data;
                 self.products = allProducts_1;
-                self.showProducts(allProducts_1);
+                self.renderProducts(allProducts_1);
             }
         };
         xhttp.open('GET', "http://localhost:3000/product/?page=1");
@@ -173,21 +251,39 @@ var WebShop = /** @class */ (function () {
         return xhttp.responseText;
     };
     WebShop.prototype.fillProductEdit = function (product) {
-        productName.value = product.Name;
-        productPrice.value = product.Price;
-        productComment.value = product.Comment;
-        productImage.value = product.ImageFile;
-        productCategory.value = "" + product.ProductCategoryId;
-        productActive.value = "" + product.Active;
+        if (product) {
+            productName.value = product.Name;
+            productPrice.value = product.Price;
+            productComment.value = product.Comment;
+            productImage.value = product.ImageFile;
+            productCategory.value = "" + product.ProductCategoryId;
+            productActive.checked = product.Active ? true : false;
+            productForm.dataset.productId = "" + product.ProductId;
+            this.productPrompt(product.Name);
+        }
+        else {
+            productName.value = '';
+            productPrice.value = '';
+            productComment.value = '';
+            productImage.value = '';
+            productCategory.value = '';
+            productActive.checked = false;
+            this.productPrompt();
+        }
     };
     WebShop.prototype.hideProducts = function () {
-        productsContainer.innerHTML = '';
+        productsContainer.classList.add('hidden');
+    };
+    WebShop.prototype.showProducts = function () {
+        productsContainer.classList.remove('hidden');
     };
     WebShop.prototype.postNewProduct = function (payload) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 console.log(JSON.parse(xhttp.responseText));
+                self.productPrompt('', JSON.parse(xhttp.responseText).message);
             }
         };
         xhttp.open('POST', "http://localhost:3000/product/");
@@ -196,9 +292,12 @@ var WebShop = /** @class */ (function () {
     };
     WebShop.prototype.deleteProduct = function (id) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 console.log(JSON.parse(xhttp.responseText));
+                self.productPrompt('', JSON.parse(xhttp.responseText).message);
+                self.fillProductEdit();
             }
         };
         xhttp.open('DELETE', "http://localhost:3000/product/" + id);
@@ -207,15 +306,32 @@ var WebShop = /** @class */ (function () {
     };
     WebShop.prototype.updateProduct = function (id, product) {
         var xhttp = new XMLHttpRequest();
+        var self = this;
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log(JSON.parse(xhttp.responseText));
+                self.productPrompt('', JSON.parse(xhttp.responseText).message);
             }
         };
         xhttp.open('PUT', "http://localhost:3000/product/" + id);
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send(JSON.stringify(product));
     };
+    WebShop.prototype.productPrompt = function (name, message) {
+        if (!message) {
+            if (productForm.dataset.productId) {
+                productAlertPrompt.innerHTML = "You are about to edit " + name + ".";
+                submitDelete.classList.remove('hidden');
+            }
+            else {
+                productAlertPrompt.innerHTML = 'You are posting new product!';
+                submitDelete.classList.add('hidden');
+            }
+        }
+        else {
+            productAlertPrompt.innerHTML = message;
+        }
+    };
+    // <-----CATEGORIES----->
     WebShop.prototype.getProductCategories = function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -249,6 +365,7 @@ var WebShop = /** @class */ (function () {
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send();
     };
+    // <-----CART----->
     WebShop.prototype.updateCart = function () {
         cartCount.innerHTML = "(" + this.cart.length + ")";
     };
@@ -384,13 +501,21 @@ var WebShop = /** @class */ (function () {
     WebShop.prototype.showManageStore = function () {
         productForm.classList.remove('hidden');
     };
+    WebShop.prototype.hideManageStore = function () {
+        productForm.classList.add('hidden');
+    };
     return WebShop;
 }());
 var shop = new WebShop();
-goButton.addEventListener('click', function (e) {
+seekProduct.addEventListener('click', function (e) {
     shop.getProductById(productId.value);
 });
+seekCustomer.addEventListener('click', function (e) {
+    shop.getCustomerById(parseInt(customerId.value));
+});
 manageStore.addEventListener('click', function (e) {
+    shop.hideProducts();
+    shop.hideManageCustomer();
     shop.showManageStore();
 });
 login.addEventListener('click', function (e) {
@@ -402,50 +527,49 @@ login.addEventListener('click', function (e) {
         shop.login(email.value);
     }
 });
-signup.addEventListener('click', function (e) {
-    shop.hideProducts();
-    shop.showSignUp();
-});
 allProducts.addEventListener('click', function (e) {
-    shop.showProducts(shop.products);
+    shop.renderProducts(shop.products);
+    shop.showProducts();
+    shop.hideManageCustomer();
+    shop.hideManageStore();
 });
 productCategories.forEach(function (category) {
     category.addEventListener('click', function (e) {
+        shop.showProducts();
+        shop.hideManageCustomer();
+        shop.hideManageStore();
         var filteredProducts = shop.products.filter(function (product) {
             return product.ProductCategoryId === parseInt(e.target.dataset.id);
         });
-        shop.showProducts(filteredProducts);
+        var category = '';
+        console.log(productCategories[2].text);
+        switch (parseInt(e.target.dataset.id)) {
+            case 1:
+                category = "Men's clothing";
+                break;
+            case 2:
+                category = 'Jewelery';
+                break;
+            case 3:
+                category = 'Electronics';
+                break;
+            case 4:
+                category = "Women's clothing";
+                break;
+            case 5:
+                category = 'Bicycles';
+                break;
+            default:
+                break;
+        }
+        shop.renderProducts(filteredProducts, category);
     });
-});
-submitCustomer.addEventListener('click', function (e) {
-    e.preventDefault();
-    var newCustomer = {
-        CompanyTypeId: null,
-        CVR: null,
-        Name: null,
-        Address: null,
-        Zipcode: null,
-        City: null,
-        CountryId: null,
-        Email: null
-    };
-    newCustomer.CompanyTypeId = parseInt(customerType.value);
-    newCustomer.CVR = customerCvr.value;
-    newCustomer.Name = customerName.value;
-    newCustomer.Address = customerAddress.value;
-    newCustomer.Zipcode = customerZip.value;
-    newCustomer.City = customerCity.value;
-    newCustomer.CountryId = parseInt(customerCountry.value);
-    newCustomer.Email = customerEmail.value;
-    console.log(newCustomer);
-    shop.postNewCustomer(newCustomer);
 });
 productCategory.addEventListener('mousedown', function (e) {
     categorySelect.remove();
 });
 submitProduct.addEventListener('click', function (e) {
     e.preventDefault();
-    console.log(productComment.value);
     var newProduct = {
         Name: null,
         Price: null,
@@ -460,20 +584,67 @@ submitProduct.addEventListener('click', function (e) {
     newProduct.ProductCategoryId = parseInt(productCategory.value);
     newProduct.ImageFile = productImage.value;
     newProduct.Active = productActive.checked ? 1 : 0;
-    console.log(newProduct);
-    shop.postNewProduct(newProduct);
+    if (!productForm.dataset.productId) {
+        shop.postNewProduct(newProduct);
+    }
+    else {
+        shop.updateProduct(parseInt(productForm.dataset.productId), newProduct);
+    }
+});
+submitCustomer.addEventListener('click', function (e) {
+    e.preventDefault();
+    var newCustomer = {
+        Name: null,
+        Address: null,
+        CVR: null,
+        City: null,
+        CompanyTypeId: null,
+        CountryId: null,
+        Email: null,
+        Zipcode: null
+    };
+    newCustomer.Name = customerName.value;
+    newCustomer.Address = customerAddress.value;
+    newCustomer.CVR = customerCvr.value;
+    newCustomer.City = customerCity.value;
+    newCustomer.CompanyTypeId = parseInt(customerType.value);
+    newCustomer.CountryId = parseInt(customerCountry.value);
+    newCustomer.Email = customerEmail.value;
+    newCustomer.Zipcode = customerZip.value;
+    if (!customerForm.dataset.productId) {
+        shop.postNewCustomer(newCustomer);
+    }
+    else {
+        shop.updateCustomer(parseInt(productForm.dataset.productId), newCustomer);
+    }
+});
+postNewProduct.addEventListener('click', function (e) {
+    productForm.dataset.productId = '';
+    shop.fillProductEdit();
+});
+postNewCustomer.addEventListener('click', function (e) {
+    customerForm.dataset.productId = '';
+    shop.fillCustomerEdit();
 });
 testButton.addEventListener('click', function (e) {
     e.preventDefault();
     shop.showCart();
     shop.hideProducts();
 });
+submitDelete.addEventListener('click', function (e) {
+    shop.deleteProduct(parseInt(productForm.dataset.productId));
+});
+registration.addEventListener('click', function (e) {
+    shop.hideProducts();
+    shop.showManageCustomer();
+    shop.hideManageStore();
+});
+shop.getProducts();
 shop.getProductCategories();
-// shop.getProducts();
 // shop.postNewProductCategory({productCategoryName: "maros"})
 // shop.deleteProductCategory(29);
-shop.getCustomers();
-shop.getCustomer(8);
+// shop.getCustomers();
+// shop.getCustomer(8);
 // const newCustomer = {
 //   Active: 1,
 //   Address: '2 Hanover Road',
@@ -490,21 +661,9 @@ shop.getCustomer(8);
 //   Phone: '3774867117',
 //   Zipcode: '6294',
 // };
-// shop.postNewCustomer(newCustomer)
+// shop.postNewCustomer(newCustomer);
 // shop.deleteCustomer(22);
 // shop.reviveCustomer(22);
-var newProduct = {
-    Active: 1,
-    Comment: 'hmmmm dobra!',
-    CreateDate: '2021-09-08T11:19:15.000Z',
-    ImageFile: 'M215.jpg',
-    ModifiedDate: '2021-10-13T11:19:15.000Z',
-    Name: 'Ferkovica updated',
-    PartNumber: 'V487XXA',
-    Price: '139.01',
-    ProductCategoryId: 9
-};
-// shop.postNewProduct(newProduct);
-// shop.deleteProduct(12);
-// shop.updateProduct(11, newProduct)
 shop.updateCart();
+shop.productPrompt();
+shop.customerPrompt();

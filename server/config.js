@@ -1,13 +1,12 @@
 const env = process.env;
 
 const config = {
-  db: { /* don't expose password or any sensitive info, done only for demo */
+  db: { 
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'newdb'
   },
-  listPerPage: env.LIST_PER_PAGE || 10,
 };
 
 

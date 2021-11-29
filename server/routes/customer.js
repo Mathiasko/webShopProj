@@ -6,13 +6,14 @@ const {
   deleteCustomer,
   getCustomerById,
   reviveCustomer,
+  updateCustomer,
 } = require('../services/customer');
 
 router.get('/', async function (req, res, next) {
   try {
     res.json(await getCustomers());
   } catch (err) {
-    console.error(`Error while getting customer `, err.message);
+    console.error(`Error while getting customers `, err.message);
     next(err);
   }
 });
@@ -40,16 +41,20 @@ router.delete('/:id', async function (req, res, next) {
   try {
     res.json(await deleteCustomer(req.params));
   } catch (err) {
-    console.error(`Error deleting customer `, err.message);
+    console.error(`Error killing customer `, err.message);
     next(err);
   }
 });
 
 router.put('/:id', async function (req, res, next) {
   try {
-    res.json(await reviveCustomer(req.params));
+    if (req.body.Name) {
+      res.json(await updateCustomer(req.params.id, req.body));
+    } else {
+      res.json(await reviveCustomer(req.params));
+    }
   } catch (err) {
-    console.error(`Error deleting customer `, err.message);
+    console.error(`Error updating customer `, err.message);
     next(err);
   }
 });

@@ -12,7 +12,7 @@ router.get('/', async function(req, res, next) {
   }
 });
 
-/* GET products. */
+/* GET product by ID. */
 router.get('/:id', async function(req, res, next) {
   try {
     const id = req.params.id
@@ -24,7 +24,7 @@ router.get('/:id', async function(req, res, next) {
 });
 
 
-/* POST product */
+/* POST new product */
 router.post('/', async function(req, res, next) {
     try {
       res.json(await products.create(req.body));
@@ -35,11 +35,13 @@ router.post('/', async function(req, res, next) {
   });
 
 
-/* PUT product */
+/* PUT update product */
 router.put('/:id', async function(req, res, next) {
     try {
       res.json(await products.update(req.params.id, req.body));
     } catch (err) {
+      console.log(req.body);
+      console.log(req.params.id);
       console.error(`Error while updating product`, err.message);
       next(err);
     }

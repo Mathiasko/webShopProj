@@ -32,6 +32,23 @@ async function postNewCustomer({ CompanyTypeId, CVR, Name, Address, Zipcode, Cit
   }
 }
 
+async function updateCustomer(id, { CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email }) {
+  const result = await db.query(
+    `UPDATE customer 
+      SET CompanyTypeId=?, CVR=?, Name=?, Address=?, Zipcode=?, City=?, CountryId=?, Email=?
+      WHERE customerId=?`,
+    [ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email, id ]
+  );
+
+  let message = 'Error in updating customer';
+
+  if (result.affectedRows) {
+    message = 'Customer updated successfully';
+  }
+
+  return { message };
+}
+
 // async function deleteCustomer({ id }) {
 //   console.log(id);
 //   const res = await db.query(`DELETE FROM customer WHERE customerId=?`, [id]);
@@ -42,18 +59,14 @@ async function postNewCustomer({ CompanyTypeId, CVR, Name, Address, Zipcode, Cit
 // }
 
 async function deleteCustomer({ id }) {
-  console.log(id);
   const res = await db.query(`UPDATE customer SET Active = 0 WHERE customerId=?`, [id]);
-
   if (res.affectedRows) {
     return `Customer deactevated!`;
   }
 }
 
 async function reviveCustomer({ id }) {
-  console.log(id);
   const res = await db.query(`UPDATE customer SET Active = 1 WHERE customerId=?`, [id]);
-
   if (res.affectedRows) {
     return `Customer Lives!`;
   }
@@ -64,5 +77,6 @@ module.exports = {
   getCustomerById,
   postNewCustomer,
   deleteCustomer,
-  reviveCustomer
+  reviveCustomer,
+  updateCustomer
 };
