@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const sessions = require('express-session');
 const cors = require('cors');
 
@@ -12,6 +11,7 @@ const productsRouter = require('./routes/product');
 const productCategotyRouter = require('./routes/productCategory');
 const customerRouter = require('./routes/customer');
 const login = require('./routes/login');
+const invoice = require('./routes/invoice');
 
 app.use(
   cors({
@@ -27,7 +27,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Tak predsa' });
+  res.json({ message: 'WEB SHOP' });
 });
 
 app.use('/language', languagesRouter);
@@ -35,6 +35,7 @@ app.use('/product', productsRouter);
 app.use('/productCategory', productCategotyRouter);
 app.use('/customer', customerRouter);
 app.use('/login', login);
+app.use('/invoice', invoice);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

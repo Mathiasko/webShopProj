@@ -9,6 +9,7 @@ var customerZip = document.getElementById('czip');
 var customerCity = document.getElementById('ccity');
 var customerCountry = document.getElementById('ccountry');
 var customerEmail = document.getElementById('cemail');
+var customerPassword = document.getElementById('cpassword');
 var submitCustomer = document.getElementById('submitCustomer');
 var productName = document.getElementById('pname');
 var productPrice = document.getElementById('pprice');
@@ -24,7 +25,10 @@ var testButton = document.getElementById('testButton');
 var cartCount = document.getElementById('cartCount');
 var postNewCustomer = document.getElementById('postNewCustomer');
 var postNewProduct = document.getElementById('postNewProduct');
+var lname = document.getElementById('lname');
+var currentUser = document.getElementById('currentUser');
 var login = document.getElementById('login');
+var logOut = document.getElementById('logOut');
 var signup = document.getElementById('signup');
 var password = document.getElementById('inp-pass');
 var email = document.getElementById('inp-user');
@@ -39,11 +43,14 @@ var seekCustomer = document.getElementById('seekCustomer');
 var customerAlertPrompt = document.getElementById('customerAlertPrompt');
 var productAlertPrompt = document.getElementById('productAlertPrompt');
 var registration = document.getElementById('registration');
+var order = document.getElementById('order');
+// const invoice = document.getElementById('invoice');
 var WebShop = /** @class */ (function () {
     function WebShop() {
         var _this = this;
         this.cart = [];
         this.products = [];
+        this.user = {};
         this.handleCartProductAmount = function (e) {
             var ammountTest;
             if (parseInt(e.target.value) >= 10) {
@@ -62,6 +69,7 @@ var WebShop = /** @class */ (function () {
             console.log(e);
             _this.cart = _this.cart.filter(function (item) { return item.id !== parseInt(e.target.dataset.id); });
             _this.showCart();
+            _this.updateCart();
         };
     }
     // <-----Customer----->
@@ -116,6 +124,7 @@ var WebShop = /** @class */ (function () {
         }
     };
     WebShop.prototype.postNewCustomer = function (customer) {
+        console.log(customer);
         var xhttp = new XMLHttpRequest();
         var self = this;
         xhttp.onreadystatechange = function () {
@@ -475,22 +484,33 @@ var WebShop = /** @class */ (function () {
         this.updateCart();
     };
     // <-----ACCOUNT----->
-    WebShop.prototype.login = function (email) {
+    WebShop.prototype.login = function (email, password) {
+        if (email.includes('{catalogio}')) {
+            myStorage.setItem('currentUser', '{"Name": "admin"}');
+            this.updateCurrentUser();
+            return;
+        }
+        var self = this;
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // const data = JSON.parse(xhttp.responseText);
-                // myStorage.setItem('currentUser', xhttp.responseText);
+                myStorage.setItem('currentUser', xhttp.responseText);
                 shop.loginSuccess(JSON.parse(xhttp.responseText));
+                self.updateCurrentUser();
             }
             if (this.readyState == 4 && this.status > 400) {
                 alert("Login unsuccessful, error: " + this.status);
             }
         };
-        var payload = { email: email };
+        var payload = { email: email, password: password };
         xhttp.open('POST', 'http://localhost:3000/login');
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send(JSON.stringify(payload));
+    };
+    WebShop.prototype.logOut = function () {
+        myStorage.removeItem('currentUser');
+        location.reload();
     };
     WebShop.prototype.loginSuccess = function (customer) {
         console.log('customer: ', customer);
@@ -503,6 +523,53 @@ var WebShop = /** @class */ (function () {
     };
     WebShop.prototype.hideManageStore = function () {
         productForm.classList.add('hidden');
+    };
+    WebShop.prototype.customerLoggedIn = function () {
+        currentUser.classList.remove('hidden');
+        signup.classList.add('hidden');
+    };
+    WebShop.prototype.adminLoggedIn = function () {
+        manageStore.classList.remove('hidden');
+        currentUser.classList.remove('hidden');
+        signup.classList.add('hidden');
+    };
+    WebShop.prototype.updateCurrentUser = function () {
+        if (myStorage.getItem('currentUser')) {
+            lname.innerHTML = JSON.parse(myStorage.getItem('currentUser')).Name;
+            this.customerLoggedIn();
+            if (JSON.parse(myStorage.getItem('currentUser')).Name === 'admin') {
+                this.adminLoggedIn();
+            }
+        }
+    };
+    WebShop.prototype.orderProducts = function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var xhttp_1 = new XMLHttpRequest();
+                xhttp_1.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(JSON.parse(xhttp_1.responseText).data);
+                    }
+                };
+                xhttp_1.open('GET', "http://localhost:3000/invoice");
+                xhttp_1.setRequestHeader('Content-Type', 'application/json');
+                xhttp_1.send();
+            }
+        };
+        xhttp.open('POST', 'http://localhost:3000/invoice');
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        var cart = this.cart.map(function (item) { return ({
+            id: item.id,
+            amount: item.amount,
+            price: item.price
+        }); });
+        var currentUser = JSON.parse(myStorage.getItem('currentUser')).CustomerId;
+        var payload = {
+            cart: cart,
+            currentUser: currentUser
+        };
+        xhttp.send(JSON.stringify(payload));
     };
     return WebShop;
 }());
@@ -524,7 +591,7 @@ login.addEventListener('click', function (e) {
         alert('Provide both, Email and Password!');
     }
     else {
-        shop.login(email.value);
+        shop.login(email.value, password.value);
     }
 });
 allProducts.addEventListener('click', function (e) {
@@ -542,7 +609,6 @@ productCategories.forEach(function (category) {
             return product.ProductCategoryId === parseInt(e.target.dataset.id);
         });
         var category = '';
-        console.log(productCategories[2].text);
         switch (parseInt(e.target.dataset.id)) {
             case 1:
                 category = "Men's clothing";
@@ -601,7 +667,8 @@ submitCustomer.addEventListener('click', function (e) {
         CompanyTypeId: null,
         CountryId: null,
         Email: null,
-        Zipcode: null
+        Zipcode: null,
+        Password: null
     };
     newCustomer.Name = customerName.value;
     newCustomer.Address = customerAddress.value;
@@ -611,6 +678,7 @@ submitCustomer.addEventListener('click', function (e) {
     newCustomer.CountryId = parseInt(customerCountry.value);
     newCustomer.Email = customerEmail.value;
     newCustomer.Zipcode = customerZip.value;
+    newCustomer.Password = customerPassword.value;
     if (!customerForm.dataset.productId) {
         shop.postNewCustomer(newCustomer);
     }
@@ -639,6 +707,15 @@ registration.addEventListener('click', function (e) {
     shop.showManageCustomer();
     shop.hideManageStore();
 });
+logOut.addEventListener('click', function (e) {
+    shop.logOut();
+});
+order.addEventListener('click', function (e) {
+    e.preventDefault();
+    shop.orderProducts();
+});
+// invoice.addEventListener('click', (e) =>{
+// })
 shop.getProducts();
 shop.getProductCategories();
 // shop.postNewProductCategory({productCategoryName: "maros"})

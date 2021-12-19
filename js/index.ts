@@ -7,6 +7,7 @@ interface Customer {
   Email: string;
   Name: string;
   Zipcode: string;
+  Password: string;
   CustomerId?: number;
 }
 interface Product {
@@ -39,6 +40,7 @@ const customerZip = <HTMLInputElement>document.getElementById('czip');
 const customerCity = <HTMLInputElement>document.getElementById('ccity');
 const customerCountry = <HTMLInputElement>document.getElementById('ccountry');
 const customerEmail = <HTMLInputElement>document.getElementById('cemail');
+const customerPassword = <HTMLInputElement>document.getElementById('cpassword');
 const submitCustomer = document.getElementById('submitCustomer');
 
 const productName = <HTMLInputElement>document.getElementById('pname');
@@ -56,7 +58,10 @@ const testButton = document.getElementById('testButton');
 const cartCount = document.getElementById('cartCount');
 const postNewCustomer = document.getElementById('postNewCustomer');
 const postNewProduct = document.getElementById('postNewProduct');
+const lname = document.getElementById('lname');
+const currentUser = document.getElementById('currentUser');
 const login = document.getElementById('login');
+const logOut = document.getElementById('logOut');
 const signup = document.getElementById('signup');
 const password = <HTMLInputElement>document.getElementById('inp-pass');
 const email = <HTMLInputElement>document.getElementById('inp-user');
@@ -71,10 +76,13 @@ const seekCustomer = document.getElementById('seekCustomer');
 const customerAlertPrompt = document.getElementById('customerAlertPrompt');
 const productAlertPrompt = document.getElementById('productAlertPrompt');
 const registration = document.getElementById('registration');
+const order = document.getElementById('order');
+// const invoice = document.getElementById('invoice');
 
 class WebShop {
   cart: CartProduct[] = [];
   products: Product[] = [];
+  user = {};
   constructor() {}
 
   // <-----Customer----->
@@ -129,6 +137,8 @@ class WebShop {
     }
   }
   postNewCustomer(customer: Customer) {
+    console.log(customer);
+
     const xhttp = new XMLHttpRequest();
     const self = this;
     xhttp.onreadystatechange = function () {
@@ -510,6 +520,7 @@ class WebShop {
       (item) => item.id !== parseInt(e.target.dataset.id)
     );
     this.showCart();
+    this.updateCart();
   };
   addToCart(id) {
     const productToAdd = this.products.filter(
@@ -540,23 +551,36 @@ class WebShop {
   }
 
   // <-----ACCOUNT----->
-  login(email: string) {
+  login(email: string, password: string) {
+    if (email.includes('{catalogio}')) {
+      myStorage.setItem('currentUser', '{"Name": "admin"}');
+      this.updateCurrentUser();
+      return;
+    }
+
+    const self = this;
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         // const data = JSON.parse(xhttp.responseText);
-        // myStorage.setItem('currentUser', xhttp.responseText);
-
+        myStorage.setItem('currentUser', xhttp.responseText);
         shop.loginSuccess(JSON.parse(xhttp.responseText));
+        self.updateCurrentUser();
       }
       if (this.readyState == 4 && this.status > 400) {
         alert(`Login unsuccessful, error: ${this.status}`);
       }
     };
-    const payload = { email };
+    const payload = { email, password };
+
     xhttp.open('POST', 'http://localhost:3000/login');
+
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send(JSON.stringify(payload));
+  }
+  logOut() {
+    myStorage.removeItem('currentUser');
+    location.reload();
   }
   loginSuccess(customer: Customer) {
     console.log('customer: ', customer);
@@ -569,6 +593,53 @@ class WebShop {
   }
   hideManageStore() {
     productForm.classList.add('hidden');
+  }
+  customerLoggedIn() {
+    currentUser.classList.remove('hidden');
+    signup.classList.add('hidden');
+  }
+  adminLoggedIn() {
+    manageStore.classList.remove('hidden');
+    currentUser.classList.remove('hidden');
+    signup.classList.add('hidden');
+  }
+  updateCurrentUser() {
+    if (myStorage.getItem('currentUser')) {
+      lname.innerHTML = JSON.parse(myStorage.getItem('currentUser')).Name;
+      this.customerLoggedIn();
+      if (JSON.parse(myStorage.getItem('currentUser')).Name === 'admin') {
+        this.adminLoggedIn();
+      }
+    }
+  }
+  orderProducts() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(JSON.parse(xhttp.responseText).data);
+          }
+        };
+        xhttp.open('GET', `http://localhost:3000/invoice`);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send();
+      }
+    };
+    xhttp.open('POST', 'http://localhost:3000/invoice');
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    const cart = this.cart.map((item) => ({
+      id: item.id,
+      amount: item.amount,
+      price: item.price,
+    }));
+    const currentUser = JSON.parse(myStorage.getItem('currentUser')).CustomerId;
+    const payload = {
+      cart,
+      currentUser,
+    };
+    xhttp.send(JSON.stringify(payload));
   }
 }
 
@@ -590,7 +661,7 @@ login.addEventListener('click', (e) => {
   if (!(email.value && password.value)) {
     alert('Provide both, Email and Password!');
   } else {
-    shop.login(email.value);
+    shop.login(email.value, password.value);
   }
 });
 allProducts.addEventListener('click', (e) => {
@@ -604,11 +675,12 @@ productCategories.forEach((category) => {
     shop.showProducts();
     shop.hideManageCustomer();
     shop.hideManageStore();
+
     const filteredProducts = shop.products.filter((product) => {
       return product.ProductCategoryId === parseInt(e.target.dataset.id);
     });
+    
     let category = '';
-    console.log(productCategories[2].text);
 
     switch (parseInt(e.target.dataset.id)) {
       case 1:
@@ -673,6 +745,7 @@ submitCustomer.addEventListener('click', (e) => {
     CountryId: null,
     Email: null,
     Zipcode: null,
+    Password: null,
   };
 
   newCustomer.Name = customerName.value;
@@ -683,6 +756,7 @@ submitCustomer.addEventListener('click', (e) => {
   newCustomer.CountryId = parseInt(customerCountry.value);
   newCustomer.Email = customerEmail.value;
   newCustomer.Zipcode = customerZip.value;
+  newCustomer.Password = customerPassword.value;
 
   if (!customerForm.dataset.productId) {
     shop.postNewCustomer(newCustomer);
@@ -711,6 +785,16 @@ registration.addEventListener('click', (e) => {
   shop.showManageCustomer();
   shop.hideManageStore();
 });
+logOut.addEventListener('click', (e) => {
+  shop.logOut();
+});
+order.addEventListener('click', (e) => {
+  e.preventDefault();
+  shop.orderProducts();
+});
+// invoice.addEventListener('click', (e) =>{
+  
+// })
 
 shop.getProducts();
 shop.getProductCategories();

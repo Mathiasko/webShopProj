@@ -1,4 +1,6 @@
 const db = require("./db");
+const bcrypt = require('bcryptjs');
+const { crypt } = require('../helper')
 
 async function getCustomers() {
   const rows = await db.query(`SELECT * FROM customer`);
@@ -21,16 +23,20 @@ async function getCustomerById({ id }) {
   return res;
 }
 
-async function postNewCustomer({ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email}) {
-  console.log(CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email);
-  const res = await db.query(
-    `INSERT INTO customer (CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email) VALUES (?,?,?,?,?,?,?,?)`,
-    [ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email]
-  );
-  if (res.affectedRows) {
-    return `New customer added! /n ${JSON.stringify(res)}`;
-  }
+async function postNewCustomer({ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email }, {Password}) {
+
+  const hashedPassword = await bcrypt.hash(Password, crypt.saltRounds);
+  console.log(hashedPassword);
+  // const res = await db.query(
+  //   `INSERT INTO customer (CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email) VALUES (?,?,?,?,?,?,?,?);
+  //   INSERT INTO customerpassword (FK_CustomerId, hashedPassword) VALUES (SCOPE_IDENTITY(), (?));`,
+  //   [ CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email, hashedPassword]
+  // );
+    return `New customer added! /n ${JSON.stringify(hashedPassword)}`;
 }
+
+
+// SELECT CustomerID, Name, Email FROM customer WHERE customerId = SCOPE_IDENTITY();
 
 async function updateCustomer(id, { CompanyTypeId, CVR, Name, Address, Zipcode, City, CountryId, Email }) {
   const result = await db.query(

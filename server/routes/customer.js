@@ -1,4 +1,6 @@
 const express = require('express');
+const _ = require('lodash');
+
 const router = express.Router();
 const {
   getCustomers,
@@ -28,9 +30,17 @@ router.get('/:id', async function (req, res, next) {
 });
 
 router.post('/', async function (req, res, next) {
+  const customer = _.omit(req.body, 'Password');
+  const customerPassword = _.pick(req.body, 'Password');
+
+  // ToDo: Validate customer and customerPassword
+  // ToDo: Make shure there isn't same email already in the DB
+  
+  console.log(JSON.stringify(customer));
   try {
-    res.json(await postNewCustomer(req.body));
-    // console.log(req.body);
+    const newCustomer = await postNewCustomer(customer, customerPassword);
+    // console.log(newCustomer);
+    res.send(JSON.stringify(newCustomer));
   } catch (err) {
     console.error(`Error creating customer `, err.message);
     next(err);

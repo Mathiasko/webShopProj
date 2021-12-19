@@ -56,18 +56,24 @@ tfoot {
 }
 
 .cart {
-  position: absolute;
-  right: 10%;
-  top: 50%;
   display: flex;
+  cursor: pointer;
 }
 
 .cart p {
   font-size: 1.5em;
 }
 
+.cartTitle{
+  margin-right: 5px;
+}
+
+.cart i {
+  margin-top: 15px;
+  margin-right: 10px;
+}
 #cart img {
-  max-width: 100px;
+  max-width: 125px;
 }
 
 #cart th {
@@ -140,4 +146,21 @@ input::-webkit-inner-spin-button {
 .productTitle{
   position: absolute;
   transform: translateY(-65px);
+}
+
+.registration{
+  padding: 5px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.cart-container{
+  display: flex;
+}
+
+.order{
+  padding: 10px 15px;
+  font-size: 1.5em;
+  align-self: center;
+  margin-left: 25px;
 }
