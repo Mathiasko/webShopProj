@@ -54,10 +54,12 @@
                   >,
                   <a href="#" class="productCategory" data-id="3">Bicycles</a>
                 </dd>
+                <dt><a href="#" class="hidden" id="getInvoices">Get Invoices</a></dt>
+
               </dl>
               <dl class="cat f-right">
                 <dt id="manageStore" class="hidden"><a href="#" >Manage store</a></dt>
-                <a class="cart" id="testButton">
+                <a class="cart" id="cartButton">
                   <i class="fa-solid fa-cart-shopping fa-2x"></i>
                   <p class="cartTitle">Cart </p>
                   <p id="cartCount">(0)</p>
@@ -83,6 +85,7 @@
                           style="width: 190px"
                           name=""
                           id="inp-user"
+                          value="test@test.com"
                         />
                       </td>
                     </tr>
@@ -95,6 +98,8 @@
                           style="width: 190px"
                           name=""
                           id="inp-pass"
+                          value="password"
+
                         />
                       </td>
                     </tr>
@@ -136,12 +141,22 @@
           </div>
         </div>
 
+        <!-- PRODUCTS -->
         <div class="box">
           <div id="products" class="productsArr">
-            <!-- ////////////PRODUCTS//////////// -->
           </div>
         </div>
       </div>
+
+      <!-- INVOICES -->
+      <div class="box">
+        <div id="invoices" class="productsArr">
+        </div>
+        <div id="invoice" class="invoiceDetail">
+        </div>
+      </div>
+    </div>
+
 
       <!-- CUSTOMER FORM -->
 
@@ -286,8 +301,7 @@
       </div>
       <div class="cart-container">
         <table id="cart"></table>
-        <button id="order" class="order">Order</button>
-        <!-- <button id="invoice" class="order">Download Invoice</button> -->
+        <button id="order" class="order hidden">Order</button>
       </div>
     </div>
   </body>

@@ -54,7 +54,7 @@ const submitDelete = document.getElementById('submitDelete');
 const categorySelect = document.getElementById('categorySelect');
 
 const cart = document.getElementById('cart');
-const testButton = document.getElementById('testButton');
+const cartButton = document.getElementById('cartButton');
 const cartCount = document.getElementById('cartCount');
 const postNewCustomer = document.getElementById('postNewCustomer');
 const postNewProduct = document.getElementById('postNewProduct');
@@ -77,7 +77,9 @@ const customerAlertPrompt = document.getElementById('customerAlertPrompt');
 const productAlertPrompt = document.getElementById('productAlertPrompt');
 const registration = document.getElementById('registration');
 const order = document.getElementById('order');
-// const invoice = document.getElementById('invoice');
+const getInvoices = document.getElementById('getInvoices');
+const invoicesContainer = document.getElementById('invoices');
+const invoice = document.getElementById('invoice');
 
 class WebShop {
   cart: CartProduct[] = [];
@@ -207,6 +209,7 @@ class WebShop {
   }
   showManageCustomer() {
     customerForm.classList.remove('hidden');
+    order.classList.add('hidden')
   }
 
   // <-----Products----->
@@ -238,10 +241,8 @@ class WebShop {
 
       const addToCart = document.createElement('button');
       addToCart.innerHTML = 'Add To Cart';
-      addToCart.dataset.id = product.ProductId.toString();
       addToCart.addEventListener('click', (e) => {
-        const productId = parseInt(e.target.dataset.id);
-        shop.addToCart(productId);
+        shop.addToCart(product.ProductId);
       });
       productDiv.appendChild(addToCart);
     });
@@ -257,7 +258,7 @@ class WebShop {
         self.renderProducts(allProducts);
       }
     };
-    xhttp.open('GET', `http://localhost:3000/product/?page=1`);
+    xhttp.open('GET', `http://localhost:3000/product/`);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send();
     return xhttp.responseText;
@@ -296,11 +297,88 @@ class WebShop {
       this.productPrompt();
     }
   }
+  showProducts() {
+    productsContainer.classList.remove('hidden');
+    order.classList.add('hidden')
+    invoicesContainer.classList.add('hidden')
+  }
   hideProducts() {
     productsContainer.classList.add('hidden');
   }
-  showProducts() {
-    productsContainer.classList.remove('hidden');
+  showInvoices() {
+    invoicesContainer.classList.remove('hidden');
+    cart.classList.add('hidden')
+  }
+  getInvoices(id) {
+    const xhttp = new XMLHttpRequest();
+    const self = this;
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let invoices = JSON.parse(xhttp.responseText);
+        self.renderInvoices(invoices);
+      }
+    };
+    xhttp.open('GET', `http://localhost:3000/invoice/${id}`);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send();
+    return xhttp.responseText;
+  }
+  renderInvoices(invoices) {
+    invoicesContainer.innerHTML=''
+    invoices.forEach((invoice) => {
+      const invoiceDiv = document.createElement('div');
+      invoiceDiv.classList.add('invoice');
+
+      const invoiceId = document.createElement('h1');
+      invoiceId.innerHTML = invoice.InvoiceId;
+      invoiceDiv.appendChild(invoiceId);
+
+      const invoiceCreateDate = document.createElement('p');
+      // invoiceCreateDate.classList.add('');
+      invoiceCreateDate.innerHTML = invoice.CreateDate;
+      invoiceDiv.appendChild(invoiceCreateDate);
+
+      const showDetail = document.createElement('button');
+      showDetail.innerHTML = 'Details';
+      showDetail.addEventListener('click', (e) => {
+        shop.getInvoiceDetail(invoice.InvoiceId);
+      });
+      invoiceDiv.appendChild(showDetail);
+
+      invoicesContainer.appendChild(invoiceDiv);
+    });
+  }
+  getInvoiceDetail(invoiceId) {
+    const xhttp = new XMLHttpRequest();
+    const self = this;
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let invoice = JSON.parse(xhttp.responseText);
+        console.log(invoice);
+        
+        self.showInvoice(invoice);
+      }
+    };
+    xhttp.open('GET', `http://localhost:3000/invoice/lines/${invoiceId}`);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send();
+    return xhttp.responseText;
+  }
+  showInvoice(invoiceData) {
+    invoice.innerHTML=""
+    const invoiceDetail = document.createElement('div');
+    // invoiceDetail.classList.add("invoicetext")
+    invoice.appendChild(invoiceDetail);
+    invoiceData.forEach(invoiceLine => {
+      const invoiceProduct = shop.products.find(el => el.ProductId === invoiceLine.ProductId)
+      const productName = document.createElement('h2')
+      productName.innerHTML= `${invoiceLine.Quantity}x ${invoiceProduct.Name}`
+      invoiceDetail.appendChild(productName)
+      const productPrice = document.createElement('h3')
+      productPrice.innerHTML= invoiceProduct.Price
+      invoiceDetail.appendChild(productPrice)
+    });
+    invoice.appendChild(invoiceDetail)
   }
   postNewProduct(payload: Product) {
     const xhttp = new XMLHttpRequest();
@@ -398,7 +476,7 @@ class WebShop {
   }
   showCart() {
     cart.innerHTML = '';
-
+    order.classList.remove('hidden')
     const tableTitle = document.createElement('tr');
 
     const rowNumber = document.createElement('th');
@@ -590,6 +668,7 @@ class WebShop {
   }
   showManageStore() {
     productForm.classList.remove('hidden');
+    order.classList.add('hidden')
   }
   hideManageStore() {
     productForm.classList.add('hidden');
@@ -597,6 +676,7 @@ class WebShop {
   customerLoggedIn() {
     currentUser.classList.remove('hidden');
     signup.classList.add('hidden');
+    getInvoices.classList.remove('hidden');
   }
   adminLoggedIn() {
     manageStore.classList.remove('hidden');
@@ -679,7 +759,7 @@ productCategories.forEach((category) => {
     const filteredProducts = shop.products.filter((product) => {
       return product.ProductCategoryId === parseInt(e.target.dataset.id);
     });
-    
+
     let category = '';
 
     switch (parseInt(e.target.dataset.id)) {
@@ -772,9 +852,15 @@ postNewCustomer.addEventListener('click', (e) => {
   customerForm.dataset.productId = '';
   shop.fillCustomerEdit();
 });
-testButton.addEventListener('click', (e) => {
+cartButton.addEventListener('click', (e) => {
   e.preventDefault();
   shop.showCart();
+  shop.hideProducts();
+});
+getInvoices.addEventListener('click', (e) => {
+  e.preventDefault();
+  shop.showInvoices();
+  shop.getInvoices(JSON.parse(myStorage.getItem('currentUser')).CustomerId);
   shop.hideProducts();
 });
 submitDelete.addEventListener('click', (e) => {
@@ -792,38 +878,9 @@ order.addEventListener('click', (e) => {
   e.preventDefault();
   shop.orderProducts();
 });
-// invoice.addEventListener('click', (e) =>{
-  
-// })
 
 shop.getProducts();
 shop.getProductCategories();
-
-// shop.postNewProductCategory({productCategoryName: "maros"})
-// shop.deleteProductCategory(29);
-// shop.getCustomers();
-// shop.getCustomer(8);
-
-// const newCustomer = {
-//   Active: 1,
-//   Address: '2 Hanover Road',
-//   CVR: '35291343',
-//   City: 'Wotsogo',
-//   Comment: null,
-//   CompanyName: 'Topiclounge',
-//   CompanyTypeId: 1,
-//   CountryId: 3,
-//   CreateDate: '2017-11-09T16:10:54.000Z',
-//   Email: 'ckelsey6@feedburner.com',
-//   ModifiedDate: '2021-06-08T21:45:23.000Z',
-//   Name: 'Fero Jozo',
-//   Phone: '3774867117',
-//   Zipcode: '6294',
-// };
-
-// shop.postNewCustomer(newCustomer);
-// shop.deleteCustomer(22);
-// shop.reviveCustomer(22);
 
 shop.updateCart();
 shop.productPrompt();

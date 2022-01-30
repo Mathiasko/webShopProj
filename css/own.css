@@ -164,3 +164,31 @@ input::-webkit-inner-spin-button {
   align-self: center;
   margin-left: 25px;
 }
+
+.invoice {
+  margin: auto;
+  border: solid wheat 1px;
+  border-radius: 5%;
+  padding: 1em;
+}
+
+.invoice button{
+  padding: .5em 1em;
+}
+
+.invoiceDetail{
+  display: flex;
+  padding-top: 3em;
+}
+
+.invoiceDetail div h3{
+  margin: 0;
+  margin-bottom: 1em;
+}
+.invoiceDetail div h2{
+  margin: 0;
+}
+
+.invoicetext{
+  margin: auto;
+}

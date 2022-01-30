@@ -19,12 +19,10 @@ const createNewInvoice = async (currentUser, cart) => {
   return invoiceLines;
 };
 
-const getInvoices = async () => {
+const getInvoices = async (currentUser) => {
   const invoices = await query(`
-    SELECT * FROM invoice
-      INNER JOIN customer
-      ON invoice.customerid = customer.customerid
-  `);
+    SELECT * FROM invoice WHERE invoice.customerid = (?)
+  `,[currentUser]);
   return invoices;
 };
 

@@ -21,7 +21,7 @@ var submitProduct = document.getElementById('submitProduct');
 var submitDelete = document.getElementById('submitDelete');
 var categorySelect = document.getElementById('categorySelect');
 var cart = document.getElementById('cart');
-var testButton = document.getElementById('testButton');
+var cartButton = document.getElementById('cartButton');
 var cartCount = document.getElementById('cartCount');
 var postNewCustomer = document.getElementById('postNewCustomer');
 var postNewProduct = document.getElementById('postNewProduct');
@@ -44,7 +44,9 @@ var customerAlertPrompt = document.getElementById('customerAlertPrompt');
 var productAlertPrompt = document.getElementById('productAlertPrompt');
 var registration = document.getElementById('registration');
 var order = document.getElementById('order');
-// const invoice = document.getElementById('invoice');
+var getInvoices = document.getElementById('getInvoices');
+var invoicesContainer = document.getElementById('invoices');
+var invoice = document.getElementById('invoice');
 var WebShop = /** @class */ (function () {
     function WebShop() {
         var _this = this;
@@ -196,6 +198,7 @@ var WebShop = /** @class */ (function () {
     };
     WebShop.prototype.showManageCustomer = function () {
         customerForm.classList.remove('hidden');
+        order.classList.add('hidden');
     };
     // <-----Products----->
     WebShop.prototype.renderProducts = function (products, category) {
@@ -221,10 +224,8 @@ var WebShop = /** @class */ (function () {
             productDiv.appendChild(productPrice);
             var addToCart = document.createElement('button');
             addToCart.innerHTML = 'Add To Cart';
-            addToCart.dataset.id = product.ProductId.toString();
             addToCart.addEventListener('click', function (e) {
-                var productId = parseInt(e.target.dataset.id);
-                shop.addToCart(productId);
+                shop.addToCart(product.ProductId);
             });
             productDiv.appendChild(addToCart);
         });
@@ -240,7 +241,7 @@ var WebShop = /** @class */ (function () {
                 self.renderProducts(allProducts_1);
             }
         };
-        xhttp.open('GET', "http://localhost:3000/product/?page=1");
+        xhttp.open('GET', "http://localhost:3000/product/");
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send();
         return xhttp.responseText;
@@ -280,11 +281,83 @@ var WebShop = /** @class */ (function () {
             this.productPrompt();
         }
     };
+    WebShop.prototype.showProducts = function () {
+        productsContainer.classList.remove('hidden');
+        order.classList.add('hidden');
+        invoicesContainer.classList.add('hidden');
+    };
     WebShop.prototype.hideProducts = function () {
         productsContainer.classList.add('hidden');
     };
-    WebShop.prototype.showProducts = function () {
-        productsContainer.classList.remove('hidden');
+    WebShop.prototype.showInvoices = function () {
+        invoicesContainer.classList.remove('hidden');
+        cart.classList.add('hidden');
+    };
+    WebShop.prototype.getInvoices = function (id) {
+        var xhttp = new XMLHttpRequest();
+        var self = this;
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var invoices = JSON.parse(xhttp.responseText);
+                self.renderInvoices(invoices);
+            }
+        };
+        xhttp.open('GET', "http://localhost:3000/invoice/" + id);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send();
+        return xhttp.responseText;
+    };
+    WebShop.prototype.renderInvoices = function (invoices) {
+        invoicesContainer.innerHTML = '';
+        invoices.forEach(function (invoice) {
+            var invoiceDiv = document.createElement('div');
+            invoiceDiv.classList.add('invoice');
+            var invoiceId = document.createElement('h1');
+            invoiceId.innerHTML = invoice.InvoiceId;
+            invoiceDiv.appendChild(invoiceId);
+            var invoiceCreateDate = document.createElement('p');
+            // invoiceCreateDate.classList.add('');
+            invoiceCreateDate.innerHTML = invoice.CreateDate;
+            invoiceDiv.appendChild(invoiceCreateDate);
+            var showDetail = document.createElement('button');
+            showDetail.innerHTML = 'Details';
+            showDetail.addEventListener('click', function (e) {
+                shop.getInvoiceDetail(invoice.InvoiceId);
+            });
+            invoiceDiv.appendChild(showDetail);
+            invoicesContainer.appendChild(invoiceDiv);
+        });
+    };
+    WebShop.prototype.getInvoiceDetail = function (invoiceId) {
+        var xhttp = new XMLHttpRequest();
+        var self = this;
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var invoice_1 = JSON.parse(xhttp.responseText);
+                console.log(invoice_1);
+                self.showInvoice(invoice_1);
+            }
+        };
+        xhttp.open('GET', "http://localhost:3000/invoice/lines/" + invoiceId);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send();
+        return xhttp.responseText;
+    };
+    WebShop.prototype.showInvoice = function (invoiceData) {
+        invoice.innerHTML = "";
+        var invoiceDetail = document.createElement('div');
+        // invoiceDetail.classList.add("invoicetext")
+        invoice.appendChild(invoiceDetail);
+        invoiceData.forEach(function (invoiceLine) {
+            var invoiceProduct = shop.products.find(function (el) { return el.ProductId === invoiceLine.ProductId; });
+            var productName = document.createElement('h2');
+            productName.innerHTML = invoiceLine.Quantity + "x " + invoiceProduct.Name;
+            invoiceDetail.appendChild(productName);
+            var productPrice = document.createElement('h3');
+            productPrice.innerHTML = invoiceProduct.Price;
+            invoiceDetail.appendChild(productPrice);
+        });
+        invoice.appendChild(invoiceDetail);
     };
     WebShop.prototype.postNewProduct = function (payload) {
         var xhttp = new XMLHttpRequest();
@@ -381,6 +454,7 @@ var WebShop = /** @class */ (function () {
     WebShop.prototype.showCart = function () {
         var _this = this;
         cart.innerHTML = '';
+        order.classList.remove('hidden');
         var tableTitle = document.createElement('tr');
         var rowNumber = document.createElement('th');
         rowNumber.innerHTML = '#';
@@ -520,6 +594,7 @@ var WebShop = /** @class */ (function () {
     };
     WebShop.prototype.showManageStore = function () {
         productForm.classList.remove('hidden');
+        order.classList.add('hidden');
     };
     WebShop.prototype.hideManageStore = function () {
         productForm.classList.add('hidden');
@@ -527,6 +602,7 @@ var WebShop = /** @class */ (function () {
     WebShop.prototype.customerLoggedIn = function () {
         currentUser.classList.remove('hidden');
         signup.classList.add('hidden');
+        getInvoices.classList.remove('hidden');
     };
     WebShop.prototype.adminLoggedIn = function () {
         manageStore.classList.remove('hidden');
@@ -694,9 +770,15 @@ postNewCustomer.addEventListener('click', function (e) {
     customerForm.dataset.productId = '';
     shop.fillCustomerEdit();
 });
-testButton.addEventListener('click', function (e) {
+cartButton.addEventListener('click', function (e) {
     e.preventDefault();
     shop.showCart();
+    shop.hideProducts();
+});
+getInvoices.addEventListener('click', function (e) {
+    e.preventDefault();
+    shop.showInvoices();
+    shop.getInvoices(JSON.parse(myStorage.getItem('currentUser')).CustomerId);
     shop.hideProducts();
 });
 submitDelete.addEventListener('click', function (e) {
@@ -714,33 +796,8 @@ order.addEventListener('click', function (e) {
     e.preventDefault();
     shop.orderProducts();
 });
-// invoice.addEventListener('click', (e) =>{
-// })
 shop.getProducts();
 shop.getProductCategories();
-// shop.postNewProductCategory({productCategoryName: "maros"})
-// shop.deleteProductCategory(29);
-// shop.getCustomers();
-// shop.getCustomer(8);
-// const newCustomer = {
-//   Active: 1,
-//   Address: '2 Hanover Road',
-//   CVR: '35291343',
-//   City: 'Wotsogo',
-//   Comment: null,
-//   CompanyName: 'Topiclounge',
-//   CompanyTypeId: 1,
-//   CountryId: 3,
-//   CreateDate: '2017-11-09T16:10:54.000Z',
-//   Email: 'ckelsey6@feedburner.com',
-//   ModifiedDate: '2021-06-08T21:45:23.000Z',
-//   Name: 'Fero Jozo',
-//   Phone: '3774867117',
-//   Zipcode: '6294',
-// };
-// shop.postNewCustomer(newCustomer);
-// shop.deleteCustomer(22);
-// shop.reviveCustomer(22);
 shop.updateCart();
 shop.productPrompt();
 shop.customerPrompt();

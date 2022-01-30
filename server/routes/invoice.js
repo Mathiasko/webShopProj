@@ -5,7 +5,6 @@ const {
 } = require('../services/invoice');
 const express = require('express');
 const router = express.Router();
-
 router.post('/', async (req, res, next) => {
   try {
     const newInvoice = await createNewInvoice(
@@ -19,9 +18,9 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   try {
-    const invoices = await getInvoices();
+    const invoices = await getInvoices(req.params.id);
     res.send(JSON.stringify(invoices));
   } catch (err) {
     console.error(`Error while getting an invoice`, err.message);
